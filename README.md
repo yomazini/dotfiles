@@ -80,7 +80,7 @@ Development Utilities:
 
 ### 1️⃣ **One-Line Installation**
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yomazini/dotfiles/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/yomazini/dotfiles/main/install.sh -o install.sh && chmod +x install.sh && ./install.sh
 ```
 
 ### 2️⃣ **Manual Installation**
