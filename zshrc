@@ -53,6 +53,8 @@ alias cclean='bash ~/Cleaner_42.sh'
 #alias mstest="bash ~/42_minishell_tester/tester.sh"
 alias fkill="ps -ef | fzf | awk '{print \$2}' | xargs kill -9"
 alias r="ranger"
+alias ocr="~/.local/bin/gnome-ocr-area.sh"
+
 alias v="vim"
 alias md='glow -p'
 
@@ -210,7 +212,25 @@ alias todo='rg --color=always -i "(todo|fixme)"'
 
 alias update="sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y && sudo snap refresh && flatpak update -y && sudo aptitude update && sudo aptitude safe-upgrade -y "
 
-alias ocr="~/.local/bin/gnome-ocr-area.sh"
+
+# --- FIX FOR KEYBOARD INPUT ISSUES ON WAYLAND; Simple Fix---
+#
+# If you experience problems with keyboard input (e.g., arrow keys,
+# the Super key, or other shortcuts not working) in some applications,
+# it might be an issue with IBus (Intelligent Input Bus) or apps not
+# running in native Wayland mode.
+#
+# Uncomment the following lines to force all applications to use IBus and
+# run in native Wayland, then source zshrcc
+#
+# export GTK_IM_MODULE=ibus
+# export QT_IM_MODULE=ibus
+# export XMODIFIERS=@im=ibus
+# export QT_QPA_PLATFORM=wayland
+
+# export GDK_BACKEND=wayland
+# ibus restart 
+
 
 # -- Final Powerlevel10k Sourcing (MUST be at the end) --
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
