@@ -200,7 +200,6 @@ weather() {
 
 del() {
     # The -0 flags tell fd, fzf, and xargs to use a special character (null)
-    # to separate filenames, which makes it safe for all file types.
     fd --type f --hidden --exclude .git -0 | \
         fzf -m --read0 --preview 'bat --color=always {}' | \
         xargs -0 -r rm -v
@@ -208,6 +207,10 @@ del() {
 
 # 5. Find all TODOs and FIXMEs ('todo')
 alias todo='rg --color=always -i "(todo|fixme)"'
+
+alias update="sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y && sudo snap refresh && flatpak update -y && sudo aptitude update && sudo aptitude safe-upgrade -y "
+
+alias ocr="~/.local/bin/gnome-ocr-area.sh"
 
 # -- Final Powerlevel10k Sourcing (MUST be at the end) --
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
