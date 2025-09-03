@@ -2,6 +2,8 @@
 
 > A modern, powerful, and beautifully crafted development environment setup featuring Vim, Tmux, and Zsh configurations optimized for productivity and aesthetics.
 
+ - 📄 **The Visual Playbook: 10x Productivity For Software Engineers** [Get it here](https://github.com/yomazini/dotfiles/blob/main/The%20Visual%20Playbook%20Developer-Productivity-Playbook.pdf)
+
 ## ✨ Features
 
 ### 🎨 **Beautiful Gruvbox Theme Everywhere**
