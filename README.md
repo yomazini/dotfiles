@@ -37,6 +37,11 @@
 - **Productivity Aliases** and functions
 - **Interactive Tools** for file management
 
+### 🤖 **AI-Powered Gemini Commands**
+- **Automate & Enhance**: Go beyond aliases with powerful, pre-configured prompts for Gemini.
+- **Expert Personas**: Generate high-quality code, documentation, summaries, and more with a single command.
+- **Streamlined Workflow**: Integrate advanced AI capabilities directly into your terminal.
+
 ## 🛠️ What's Included
 
 ### 📁 Configuration Files
@@ -171,6 +176,41 @@ weather    # Get weather forecast
 cpy file   # Copy to clipboard
 dark_mode  # Switch to dark theme
 ```
+
+### 🤖 Gemini Commands
+
+These custom commands are designed to integrate the power of Google's Gemini directly into your command-line workflow, turning simple prompts into powerful, structured outputs. By using expert personas and predefined templates, they streamline common tasks, automate complex processes, and ensure high-quality, consistent results for everything from writing code to summarizing meetings.
+
+The following custom commands are included to supercharge your workflow with Gemini. They are automatically installed into `~/.gemini/commands`.
+
+| Command Category | Command Name | Description |
+| :--- | :--- | :--- |
+| **Content** | `content-summarize` | Provides a multi-format summary of any text. |
+| | `email-draft` | Drafts professional emails based on context, tone, and purpose. |
+| | `meeting-summary` | Summarizes meeting notes into actionable insights. |
+| | `prompt-enhance` | Refines a raw user prompt into a highly effective instruction. |
+| | `report-gen` | Generates comprehensive reports from data files. |
+| **Development** | `code-refactor` | Refactors a piece of code based on a specific instruction. |
+| | `debug-assistant` | Analyzes error logs and provides systematic debugging strategies. |
+| | `doc-generate` | Generates professional, language-aware documentation for code. |
+| | `docker-explain` | Explains a Dockerfile or docker-compose.yml in plain English. |
+| | `git-commit` | Generates a Conventional Commit message from staged changes. |
+| | `git-summarize` | Summarizes a git log into a human-readable changelog. |
+| | `test-create` | Generates a complete, runnable test file for the provided code. |
+| | `test-gen` | Automatically generates comprehensive test cases. |
+| | `test-report` | Analyzes a test failure report and suggests fixes. |
+| **Media** | `photo-rename` | Organizes and renames photos based on visual content and metadata. |
+| **Productivity**| `flashcards-create` | Generates a set of 10 technical flashcards for Anki. |
+| | `local-weather` | Provides a clean, natural-language summary of the weather. |
+| | `search-advanced` | Activates an advanced search agent for up-to-date information. |
+| | `task-prioritizer` | Creates organized, actionable task lists with time estimates. |
+| | `ticket-create` | Formats a simple description into a structured bug report or ticket. |
+| **Security** | `security-audit` | Performs a comprehensive security audit of code and dependencies. |
+| **System** | `apt-find` | Searches APT repositories using natural language. |
+| | `cleanup` | Identifies and suggests cleanup opportunities in a codebase. |
+| | `file-organizer` | Intelligently organizes files in directories. |
+| | `sys-health-check` | Provides a quick summary of system health (disk, memory, CPU). |
+| | `sys-search` | Translates a natural language query into a ripgrep command. |
 
 ## 🎨 Customization
 

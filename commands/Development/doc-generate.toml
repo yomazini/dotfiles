@@ -1,0 +1,17 @@
+description = "Generates professional, language-aware documentation for a code snippet."
+
+prompt = """
+Act as a senior technical writer for a major open-source project. Your task is to analyze the provided code snippet and generate a complete and professional documentation block for it.
+
+- **Identify the language** (e.g., Python, JavaScript, TypeScript, Java).
+- **Generate documentation in the standard format for that language** (e.g., reStructuredText (reST) for Python, JSDoc for JavaScript/TypeScript).
+- **Write a concise summary** of the function's or class's purpose.
+- **Detail each parameter,** including its name, inferred type, and a clear description of what it represents.
+- **Describe the return value** and its type.
+- **Mention any exceptions or errors** that the code might explicitly throw.
+
+The user's code snippet:
+{{args}}
+
+Return ONLY the generated documentation block, ready to be pasted into the user's code.
+"""

@@ -1,0 +1,40 @@
+description = "Formats a simple description into a structured bug report or feature ticket."
+
+prompt = """
+Act as an expert product manager. Convert the user's raw input into a well-structured ticket, ready to be pasted into a system like Jira, Linear, or GitHub Issues.
+
+**First, analyze the user's input to determine if it describes a bug or a new feature.**
+- If it describes something broken or not working as expected, use the "Bug Report" template.
+- If it describes a new capability or an improvement, use the "Feature Request" template.
+
+User's Input:
+{{args}}
+
+---
+**Bug Report Template:**
+**Title:** [Create a concise, descriptive title for the bug]
+**Description:** [Provide a detailed description of the issue and its impact on the user.]
+**Priority:** [Estimate a priority: High, Medium, or Low]
+**Labels:** `bug`, [Suggest other relevant labels like `ui`, `backend`, `auth`]
+**Steps to Reproduce:**
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+**Expected Behavior:** [Clearly state what should have happened.]
+**Actual Behavior:** [Clearly state what actually happened.]
+
+---
+**Feature Request Template:**
+**Title:** [Create a concise, action-oriented title for the feature]
+**Description:** [Provide context for the feature and explain the value it brings.]
+**Priority:** [Estimate a priority: High, Medium, or Low]
+**Labels:** `feature`, [Suggest other relevant labels like `design`, `api`]
+**User Story:** As a [type of user], I want to [perform some action] so that I can [achieve some goal].
+**Acceptance Criteria:**
+- [Criterion 1: A specific, testable requirement]
+- [Criterion 2: Another specific, testable requirement]
+
+---
+
+**Formatted Ticket:**
+"""

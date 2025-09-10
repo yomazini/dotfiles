@@ -528,6 +528,7 @@ EOF
     setup_vim
     setup_tmux
     setup_custom_scripts
+    setup_gemini_commands
     install_configs
     change_shell
     run_health_check
@@ -538,6 +539,33 @@ EOF
     echo -e "  1. ${CYAN}Restart your terminal or run: source ~/.zshrc${NC}"
     echo -e "  2. ${CYAN}Configure Powerlevel10k: p10k configure${NC}"
     echo -e "  3. ${CYAN}Start tmux and press"
+}
+
+setup_gemini_commands() {
+    print_header "${WRENCH} Setting Up Gemini Commands"
+    
+    # Check if the user already has commands and back them up
+    if [ -d "$HOME/.gemini/commands" ] && [ "$(ls -A $HOME/.gemini/commands)" ]; then
+        print_warning "Existing Gemini commands found."
+        backup_file "$HOME/.gemini/commands"
+    fi
+    
+    print_step "The following command categories will be added:"
+    echo -e "${CYAN}Content, Development, Media, Productivity, Security, System${NC}"
+    read -p "Do you want to install these custom Gemini commands? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_step "Creating Gemini commands directory..."
+        mkdir -p ~/.gemini/commands
+        
+        print_step "Copying commands..."
+        # Using cp -r will merge the directories, overwriting conflicts but preserving user's other commands.
+        cp -r commands/* ~/.gemini/commands/
+        
+        print_success "Gemini commands installed successfully"
+    else
+        print_warning "Skipping installation of Gemini commands."
+    fi
 }
 
 # =================================================================

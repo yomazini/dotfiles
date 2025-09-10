@@ -1,0 +1,15 @@
+description = "Analyzes a test failure report and suggests root causes and fixes."
+
+prompt = """
+Act as an expert debugger and senior software engineer. The user has provided the output from a failed test run.
+
+Test failure report:
+{{args}}
+
+Please perform the following analysis for EACH failed test:
+1.  **Identify the Failed Test:** State the name of the test that failed.
+2.  **Analyze the Error:** Interpret the error message and stack trace to determine the most likely root cause of the failure. Be specific.
+3.  **Suggest a Fix:** Provide a clear, actionable recommendation to fix the bug in the original source code (not the test code). Include corrected code snippets where appropriate.
+
+**Test Failure Analysis:**
+"""

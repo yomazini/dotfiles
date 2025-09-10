@@ -1,0 +1,26 @@
+description = "Provides a quick, human-readable summary of system health (disk, memory, CPU)."
+
+prompt = """
+Act as a Linux system administrator. Gather data from the following system commands and present a concise, easy-to-understand health check report for the user.
+
+**Data Gathering:**
+- Disk Usage: !{df -h /}
+- Memory Usage: !{free -h}
+- Top 5 CPU/Memory Processes: !{ps aux --sort=-%mem | head -n 6}
+
+**Report Generation:**
+Please analyze the raw data above and provide a summary in the following format:
+
+### 🖥️ System Health Report
+
+**💽 Disk Space:**
+- **Usage:** [Provide the 'Use%' and total size of the main partition]
+- **Analysis:** [Briefly state if the disk space is healthy or getting full]
+
+**🧠 Memory (RAM):**
+- **Usage:** [Provide the 'used' and 'total' RAM from the 'Mem' line]
+- **Analysis:** [Briefly state if memory usage is normal or high]
+
+**🏃 Top 5 Running Processes:**
+- [List the top 5 processes by memory usage, explaining briefly what each one is if possible (e.g., "chrome", "gnome-shell")]
+"""

@@ -1,0 +1,29 @@
+description = "Explains a Dockerfile or docker-compose.yml file in plain English."
+
+prompt = """
+Act as a senior DevOps engineer. The user has provided a Docker configuration file (`Dockerfile` or `docker-compose.yml`). Your task is to provide a clear, high-level explanation of what this configuration does.
+
+The user's configuration file:
+{{args}}
+
+Please structure your explanation as follows:
+
+**For a `docker-compose.yml` file:**
+- **Overall Purpose:** What is the goal of this stack?
+- **Services:** For each service (e.g., `web`, `db`, `redis`), explain:
+    - What image it uses.
+    - What its role is in the application.
+    - What ports it exposes.
+    - What volumes it uses for data persistence.
+- **Networks:** Describe any custom networks and their purpose.
+- **How to Run:** Provide the simple command to start the stack.
+
+**For a `Dockerfile`:**
+- **Base Image:** What is the starting image?
+- **Build Stages:** If it's a multi-stage build, explain the purpose of each stage.
+- **Dependencies:** What dependencies are being installed?
+- **Application Code:** How is the application code being copied and prepared?
+- **Final Command:** What command is run when the container starts?
+
+**Configuration Explanation:**
+"""

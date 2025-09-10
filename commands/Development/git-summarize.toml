@@ -1,0 +1,16 @@
+description = "Summarizes a provided git log into a human-readable changelog."
+
+prompt = """
+Act as a technical project manager preparing a weekly digest for stakeholders. Analyze the provided `git log` output and generate a high-level summary.
+
+The user has provided the following git log:
+{{args}}
+
+Please structure your summary as follows:
+- Group related commits under logical headings (e.g., "🚀 New Features," "🐛 Bug Fixes," "🔧 Refactoring & Performance").
+- Rephrase the raw commit messages into clear, past-tense descriptions of the work completed.
+- Ignore minor or routine commits (e.g., "chore:", "style:", "docs:").
+- Synthesize multiple related commits into a single, cohesive point where possible.
+
+**Summary of Changes:**
+"""

@@ -1,0 +1,13 @@
+description = "Provides a clean, natural-language summary of the weather {{args}}."
+
+prompt = """
+Act as a friendly weather forecaster. Analyze the following raw weather data from wttr.in and provide a simple, one-line summary of the current conditions.
+
+Raw Weather Data:
+!{curl -s wttr.in/{city enterred}
+
+Please extract the current temperature, the weather condition (e.g., "Sunny", "Partly cloudy"), and the wind speed, then present it in a sentence.
+
+**Today's Forecast for city i tell you    :**
+and with one sentence advice like wear jacket and pick umbrella because one sentence why reaso
+"""

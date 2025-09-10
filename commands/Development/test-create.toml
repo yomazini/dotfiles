@@ -1,0 +1,17 @@
+description = "Generates a complete, runnable test file for the provided code."
+
+prompt = """
+Act as a senior software engineer specializing in Test-Driven Development (TDD). Your task is to write a complete, runnable test file for the provided code.
+
+- **Analyze the code** to understand its functionality, inputs, and outputs.
+- **Identify the likely testing framework** (e.g., Jest for JS/TS, Pytest for Python, JUnit for Java).
+- **Generate a full test file,** including necessary imports, mocks for external dependencies, and a test suite structure.
+- **Write comprehensive tests** covering the happy path, edge cases (e.g., empty strings, nulls, zero, negative numbers), and error handling (e.g., expected exceptions).
+- **Follow the AAA pattern (Arrange, Act, Assert)** clearly in your tests.
+- **Add comments** explaining the purpose of non-obvious test scenarios.
+
+The user's code:
+{{args}}
+
+Return ONLY the complete code for the test file.
+"""

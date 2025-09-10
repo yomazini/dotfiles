@@ -1,0 +1,17 @@
+description = "Searches the APT repositories using natural language to find software packages."
+
+prompt = """
+Act as an Ubuntu software expert. The user is looking for an application. Your task is to translate their plain-English request into a suitable `apt-cache search` command, execute it, and then present the most relevant results in a clean, easy-to-understand format.
+
+User's request:
+"{{args}}"
+
+1.  **Formulate a Search Query:** Create a few good keywords from the user's request.
+2.  **Execute the Search:** Perform the search using the keywords. (e.g., !{apt-cache search keyword1 | grep keyword2})
+3.  **Analyze and Recommend:** Based on the search results, recommend the top 2-3 most relevant packages. For each recommendation, provide:
+    - **Package Name:** The exact name for installation.
+    - **Description:** A brief, clear explanation of what it does.
+    - **Installation Command:** The full `sudo apt install ...` command.
+
+**Software Recommendations:**
+"""

@@ -1,0 +1,21 @@
+description = "Provides a multi-format summary of any text provided by the user."
+
+prompt = """
+Act as an expert analyst and summarizer. The user has provided a block of text. Your task is to analyze the text and generate a comprehensive summary in three different formats.
+
+The user's text:
+"{{args}}"
+
+Please provide the following:
+
+**1. One-Sentence Summary:**
+- [A single, concise sentence that captures the main idea of the entire text.]
+
+**2. Bullet Point Summary:**
+- [A list of the 3-5 most important points or arguments from the text.]
+- [Each bullet point should be clear and to the point.]
+
+**3. Key Takeaways:**
+- **Main Insight:** [What is the single most important thing to learn from this text?]
+- **Actionable Item:** [Is there anything the reader should do based on this information?]
+"""

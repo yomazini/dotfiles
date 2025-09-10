@@ -1,0 +1,20 @@
+description = "Generates a Conventional Commit message from staged changes and provides the git command."
+
+prompt = """
+Act as an expert software engineer reviewing a pull request. Your task is to analyze the provided `git diff` output and generate a commit message that strictly follows the Conventional Commits specification.
+
+The user has provided the following diff:
+{{args}}
+
+Based on the changes, perform the following steps:
+1.  **Determine the Type:** Choose from `feat`, `fix`, `build`, `chore`, `ci`, `docs`, `style`, `refactor`, `perf`, `test`.
+2.  **Write a Concise Subject Line:** Create a short, imperative-mood description of the change (e.g., "add user login endpoint" not "added user login endpoint"). Keep it under 50 characters.
+3.  **Write a Detailed Body (if necessary):** If the change is complex, add a body explaining the motivation and context ('why' and 'what').
+4.  **Add a Footer (if necessary):** Include any "BREAKING CHANGE:" notices or issue tracker references (e.g., "Fixes #123").
+
+Finally, provide the complete git command to make the commit.
+
+**Output:**
+
+**Commit Message:** 
+"""
