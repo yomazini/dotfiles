@@ -42,6 +42,10 @@
 - **Expert Personas**: Generate high-quality code, documentation, summaries, and more with a single command.
 - **Streamlined Workflow**: Integrate advanced AI capabilities directly into your terminal.
 
+🚀 **The Ultimate AI-Powered Terminal Command Playbook Agents: Your A-to-Z Guide for Gemini CLI Mastery**
+
+Imagine building a small to medium-sized application using only manual methods—no AI assistant, no optimized dotfiles, and no custom slash commands. Now, consider the hours spent on repetitive tasks like writing documentation, creating test cases, formatting commit messages, and building project plans from scratch. 🚀 The [AI-Powered Terminal Command Playbook](https://github.com/yomazini/dotfiles/blob/main/AI-Powered%20Terminal%20Command%20Playbook%20Agents.pdf) is designed to eliminate that friction entirely. By integrating this suite of custom agents directly into your terminal, you can automate these workflows, with each tool acting like a **second brain** that understands the specific context of your project's data, not just vague instructions. This approach saves a minimum of five hours on any given project and boosts your productivity tenfold, all while delivering a more consistent and professional result.
+
 ## 🛠️ What's Included
 
 ### 📁 Configuration Files
