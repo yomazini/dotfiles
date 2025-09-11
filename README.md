@@ -4,6 +4,7 @@
 
  - 📄 **The Visual Playbook: 10x Productivity For Software Engineers** [Get it here](https://github.com/yomazini/dotfiles/blob/main/The%20Visual%20Playbook%20Developer-Productivity-Playbook.pdf)
  - ⚡ **Read Also My Article : The Hidden Psychology of Great Developers** [Get it here](https://medium.com/@mazini/the-hidden-psychology-of-elite-developers-why-your-environment-is-everything-6d0a475e354e)
+ - 🚀 The [AI-Powered Terminal Command Playbook](https://github.com/yomazini/dotfiles/blob/main/AI-Powered%20Terminal%20Command%20Playbook%20Agents.pdf)
 
 ## ✨ Features
 
