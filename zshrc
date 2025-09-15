@@ -76,6 +76,22 @@ alias ls='eza --icons --git'
 alias ll='eza -l --long --header --icons --git'
 alias la='eza -a --icons --git'
 alias tree='eza --tree'
+
+# Show large directories (>10MB) including hidden ones, sorted by size from biggger to smalr 
+alias bigdirs='du -sh ~/.[^.]* ~/* 2>/dev/null | awk '\''$1 ~ /^[1-9][0-9]+M$|^[0-9]+G$|^[0-9]+T$/'\'' | sort -hr'
+
+# Show large files (>10MB) with human readable sizes
+alias bigfiles='find ~ -type f -size +10M -printf "%s %p\n" 2>/dev/null | awk '\''{size=$1/(1024*1024); printf "%.1fM %s\n", size, substr($0, index($0,$2))}'\'' | sort -nr'
+
+# Show both large directories & files (comprehensive view)
+alias bigstuff='echo "=== LARGE DIRECTORIES ===" && bigdirs && echo -e "\n=== LARGE FILES ===" && bigfiles'
+
+# Show disk usage of current directory contents (including hidden alsoo)
+alias duh='du -sh .[^.]* * 2>/dev/null | sort -hr'
+
+# Show top 10 largest items in current directory
+alias du10='du -sh .[^.]* * 2>/dev/null | sort -hr | head -10'
+
 alias cat='bat -p --paging=never'
 alias grep='rg'
 alias cd='z'
