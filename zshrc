@@ -62,7 +62,266 @@ dark_mode() {
   gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 }
 
-# -- The main command will be 'todo'
+
+
+# ===========================
+
+alias cdwn='curl -L -C - -O'
+alias cdown='curl -L -C - -o'
+alias cks='curl -L -k'
+alias chead='curl -I -L'
+alias cverb='curl -v -L'
+function cgetjson() {
+    [ -z "$1" ] && { echo "Usage: cgetjson <URL>"; return 1; }
+    curl -s -L -H "Accept: application/json" "$1" | jq .
+}
+
+function cpost() {
+    [ -z "$2" ] && { echo "Usage: cpost <URL> <DATA_OR_FILE>"; return 1; }
+    [[ "$2" == @* ]] && curl -X POST -s -L -H "Content-Type: application/json" -d "$2" "$1" | jq . || curl -X POST -s -L -H "Content-Type: application/json" -d "$2" "$1" | jq .
+}
+
+function cput() {
+    [ -z "$2" ] && { echo "Usage: cput <URL> <DATA_OR_FILE>"; return 1; }
+    [[ "$2" == @* ]] && curl -X PUT -s -L -H "Content-Type: application/json" -d "$2" "$1" | jq . || curl -X PUT -s -L -H "Content-Type: application/json" -d "$2" "$1" | jq .
+}
+
+function cdel() {
+    [ -z "$1" ] && { echo "Usage: cdel <URL>"; return 1; }
+    curl -X DELETE -s -L "$1" | jq .
+}
+
+function cresolve() {
+    [ -z "$3" ] && { echo "Usage: cresolve <DOMAIN> <IP:PORT> <URL>"; return 1; }
+    curl -v -L --resolve "$1:${2##*:}:$2" "$3"
+}
+
+function chost() {
+    [ -z "$2" ] && { echo "Usage: chost <HOST_HEADER> <URL>"; return 1; }
+    curl -v -L -H "Host: $1" "$2"
+}
+
+function cauth() {
+    [ -z "$3" ] && { echo "Usage: cauth <USER> <PASS> <URL>"; return 1; }
+    curl -v -L -u "$1:$2" "$3"
+}
+
+
+# ===========================
+
+alias jqp='jq .'
+alias jqk='jq keys'
+alias jql='jq length'
+
+function jval() {
+    [ -z "$1" ] && { echo "Usage: ... | jval <KEY>"; return 1; }
+    jq -r ".$1"
+}
+
+function jfield() {
+    [ -z "$1" ] && { echo "Usage: ... | jfield <KEY>"; return 1; }
+    jq -r '.[].'$1
+}
+
+function jfields() {
+    [ $# -eq 0 ] && { echo "Usage: ... | jfields <KEY1> <KEY2> ..."; return 1; }
+    local query_parts=""
+    for key in "$@"; do query_parts+=".$key, "; done
+    jq -r '.[] | ['"${query_parts%, }"'] | @tsv' | column -t
+}
+
+function jfind() {
+    [ -z "$2" ] && { echo "Usage: ... | jfind <KEY> <VALUE>"; return 1; }
+    jq '.[] | select(.'"$1"' == "'"$2"'")'
+}
+
+
+alias ...='cd ../../..'
+alias gp='git push'
+alias gl='git pull'
+alias gc='git commit'
+alias ~='cd ~'
+
+# ===========================
+
+
+function extract() {
+    if [ -z "$1" ]; then
+        echo "Usage: extract <archive_file>"
+        return 1
+    fi
+    
+    if [ ! -f "$1" ]; then
+        echo "Error: '$1' is not a valid file"
+        return 1
+    fi
+    
+    case "$1" in
+        *.tar.bz2)   tar xjf "$1"     ;;
+        *.tar.gz)    tar xzf "$1"     ;;
+        *.tar.xz)    tar xJf "$1"     ;;
+        *.bz2)       bunzip2 "$1"     ;;
+        *.rar)       unrar x "$1"     ;;
+        *.gz)        gunzip "$1"      ;;
+        *.tar)       tar xf "$1"      ;;
+        *.tbz2)      tar xjf "$1"     ;;
+        *.tgz)       tar xzf "$1"     ;;
+        *.zip)       unzip "$1"       ;;
+        *.Z)         uncompress "$1"  ;;
+        *.7z)        7z x "$1"        ;;
+        *)           echo "Error: '$1' cannot be extracted via extract()" ;;
+    esac
+}
+
+# Usage: extract archive.tar.gz
+
+
+function gitignore() {
+    if [ -z "$1" ]; then
+        echo "Usage: gitignore <language/framework>"
+        echo "Examples: gitignore python, gitignore node, gitignore c"
+        return 1
+    fi
+    
+    local lang=$(echo "$1" | tr '[:upper:]' '[:lower:]')
+    curl -sL "https://www.toptal.com/developers/gitignore/api/$lang" -o .gitignore
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ .gitignore created for: $1"
+        echo "📄 Preview:"
+        head -20 .gitignore
+    else
+        echo "❌ Failed to generate .gitignore for: $1"
+    fi
+}
+
+# Usage: gitignore python
+# Usage: gitignore c,vim,linux
+
+
+function backup() {
+    if [ -z "$1" ]; then
+        echo "Usage: backup <file_or_directory>"
+        return 1
+    fi
+    
+    if [ ! -e "$1" ]; then
+        echo "Error: '$1' does not exist"
+        return 1
+    fi
+    
+    local timestamp=$(date +"%Y%m%d_%H%M%S")
+    local backup_name="${1}_backup_${timestamp}"
+    
+    if [ -d "$1" ]; then
+        cp -r "$1" "$backup_name"
+        echo "✅ Directory backed up: $backup_name"
+    else
+        cp "$1" "$backup_name"
+        echo "✅ File backed up: $backup_name"
+    fi
+    
+    # Show backup size
+    du -sh "$backup_name" 2>/dev/null | awk '{print "📦 Size: " $1}'
+}
+
+# Usage: backup important_file.c
+# Usage: backup my_project/
+# Creates: important_file.c_backup_20250103_143022
+
+
+function serve() {
+    local port="${1:-8000}"
+    
+    echo "🌐 Starting HTTP server on port $port"
+    echo "📂 Serving: $(pwd)"
+    echo "🔗 Access at: http://localhost:$port"
+    echo "⏹️  Press Ctrl+C to stop"
+    echo ""
+    
+    # Try Python 3 first, then Python 2, then PHP
+    if command -v python3 &>/dev/null; then
+        python3 -m http.server "$port"
+    elif command -v python &>/dev/null; then
+        python -m SimpleHTTPServer "$port"
+    elif command -v php &>/dev/null; then
+        php -S "localhost:$port"
+    else
+        echo "❌ Error: No server found (install python3)"
+        return 1
+    fi
+}
+
+# Usage: serve          # Starts on port 8000
+# Usage: serve 3000     # Starts on port 3000
+
+function pfind() {
+    local pid
+    
+    # Show all processes with nice formatting, let user pick
+    pid=$(ps aux | sed 1d | fzf --multi --header="[SELECT PROCESS]" | awk '{print $2}')
+    
+    if [ -z "$pid" ]; then
+        echo "No process selected"
+        return 0
+    fi
+    
+    echo "Selected PID(s): $pid"
+    echo ""
+    echo "Actions:"
+    echo "  1) Show details"
+    echo "  2) Kill (SIGTERM)"
+    echo "  3) Force kill (SIGKILL)"
+    echo "  4) Cancel"
+    echo ""
+    read -p "Choose action [1-4]: " action
+    
+    case $action in
+        1)
+            echo "$pid" | xargs -I {} ps -p {} -f
+            ;;
+        2)
+            echo "$pid" | xargs kill
+            echo "✅ Sent SIGTERM to process(es)"
+            ;;
+        3)
+            echo "$pid" | xargs kill -9
+            echo "✅ Force killed process(es)"
+            ;;
+        *)
+            echo "Cancelled"
+            ;;
+    esac
+}
+
+# Usage: pfind
+# Then type to search: "node", "python", "vim", etc.
+
+
+# ============================================================
+# SUPER USEFUL QUICK ALIASES
+# ============================================================
+
+# File operations
+alias cpv='rsync -ah --info=progress2'
+alias ports='netstat -tulanp'
+alias myip='curl -s ifconfig.me'
+
+# Development
+alias npmls='npm list --depth=0'
+alias pipls='pip list --format=columns'
+alias venv='python3 -m venv venv && source venv/bin/activate'
+
+# Docker
+alias dps='docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"'
+alias dstop='docker stop $(docker ps -q)'
+alias dclean='docker system prune -af'
+
+
+# ===========================
+
+
+
 
 # -- Task Management --
 alias tda='todo.sh add'      # Quickly add a new task
