@@ -131,8 +131,35 @@ function jfields() {
 }
 
 function jfind() {
-    [ -z "$2" ] && { echo "Usage: ... | jfind <KEY> <VALUE>"; return 1; }
-    jq '.[] | select(.'"$1"' == "'"$2"'")'
+    if [ -z "$2" ]; then
+        echo "Usage: ... | jfind <KEY> <VALUE>"
+        echo "       ... | jfind <KEY> <VALUE> --contains  (for partial match)"
+        return 1
+    fi
+    
+    local key="$1"
+    local value="$2"
+    local mode="${3:-exact}"
+    
+    if [[ "$mode" == "--contains" || "$3" == "-c" ]]; then
+        # Partial match (contains)
+        jq --arg k "$key" --arg v "$value" '
+            if type == "array" then
+                map(select(.[$k] | tostring | contains($v)))
+            else
+                select(.[$k] | tostring | contains($v))
+            end
+        '
+    else
+        # Exact match
+        jq --arg k "$key" --arg v "$value" '
+            if type == "array" then
+                map(select(.[$k] == $v))
+            else
+                select(.[$k] == $v)
+            end
+        '
+    fi
 }
 
 
