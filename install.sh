@@ -146,11 +146,17 @@ install_essential_packages() {
             sudo apt install -y \
                 curl wget git vim tmux zsh \
                 build-essential cmake python3 python3-pip \
-                nodejs npm \
                 clang clang-format clangd \
                 fd-find ripgrep bat fzf \
-                tree unzip jq xclip lsof \
-                netstat-nat
+                tree unzip jq xclip lsof
+            
+            # Check Node.js separately (don't force install)
+            if ! command_exists node; then
+                print_warning "Node.js not found. Install via nvm:"
+                print_warning "curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"
+            else
+                print_success "Node.js $(node --version) detected"
+            fi
             
             # Ubuntu-specific: create symlinks for fd and bat
             mkdir -p ~/.local/bin
@@ -161,6 +167,7 @@ install_essential_packages() {
                 ln -s /usr/bin/batcat ~/.local/bin/bat
             fi
             ;;
+
             
         macos)
             print_step "Installing essential packages..."
