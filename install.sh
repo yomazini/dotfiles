@@ -555,16 +555,21 @@ setup_zsh() {
     fi
     
     # Install Zsh plugins
-    print_step "Installing Zsh plugins..."
+# Install Zsh plugins
+    print_step "Installinsg Zsh plugins..."
     
     # zsh-autosuggestions
     if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
         git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+    else
+        print_success "zsh-autosuggestions already installed"
     fi
     
     # zsh-syntax-highlighting
     if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+    else
+        print_success "zsh-syntax-highlighting already installed"
     fi
     
     print_success "Zsh plugins installed"
