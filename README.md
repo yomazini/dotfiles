@@ -419,6 +419,32 @@ type cheat >/dev/null 2>&1 && echo "✅ Help system loaded" || echo "❌ Help sy
 - **Testing time**: Reduced by 70%
 - **Debugging time**: Reduced by 50%
 
+## NOTE: 
+You May get error or problm on that just remove this and do it manually 
+
+```bash 
+
+     print_step "Installinsg Zsh plugins..."
+     
+     # zsh-autosuggestions
+-    if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions" ]; then
+-        git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+-    else
+-        print_success "zsh-autosuggestions already installed"
+-    fi
+-    
+-    # zsh-syntax-highlighting
+-    if [ ! -d "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting" ]; then
+-        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+-    else
+-        print_success "zsh-syntax-highlighting already installed"
+-    fi
+     
+     print_success "Zsh plugins installed"
+
+
+```
+
 ## 🤝 Contributing
 
 Found a bug or have a suggestion? Contributions are welcome!
