@@ -325,6 +325,38 @@ function pfind() {
 # Then type to search: "node", "python", "vim", etc.
 
 
+# Cat all files based on extenstion or none for all in dir and subdir
+
+cat_exts() {
+  # If no extensions are provided, assume all files are desired.
+  if [ $# -eq 0 ]; then
+    find . -type f -print0 | xargs -0 cat
+    return 0
+  fi
+
+  local find_args=()
+  local first_ext=1
+  for ext in "$@"; do
+    # Add a leading dot if it's missing (e.g., 'py' becomes '.py')
+    if [[ "${ext:0:1}" != "." ]]; then
+      ext=".${ext}"
+    fi
+
+    if [[ "$first_ext" -eq 1 ]]; then
+      find_args+=( -name "*${ext}" )
+      first_ext=0
+    else
+      find_args+=( -o -name "*${ext}" )
+    fi
+  done
+
+  # find . -type f ( -name "*.py" -o -name "*.md" ) ...
+  find . -type f \( "${find_args[@]}" \) -print0 | xargs -0 cat
+}
+
+
+
+
 # ============================================================
 # SUPER USEFUL QUICK ALIASES
 # ============================================================
