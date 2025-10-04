@@ -38,6 +38,15 @@
 - **Productivity Aliases** and functions
 - **Interactive Tools** for file management
 
+### 🔄 **Smart Rollback System**
+- **One-Command Rollback** - Restore any config file instantly with `./install.sh --rollback <vim|tmux|zsh|all>`
+- **Automatic Backups** - Every installation creates timestamped backups of your existing configs
+- **Safe Experimentation** - Try new configurations without fear - rollback anytime to previous working state
+- **Granular Control** - Rollback individual configs (vim, tmux, zsh) or all at once
+- **Tools Stay Intact** - Rollback only affects configuration files, all installed tools remain
+- **Backup History** - View all available backups with `./install.sh --list-backups`
+- **Safety Net** - Creates additional backup before rollback, ensuring you can never lose data
+
 ### 🔧 **Advanced Command Utilities**
 - **CURL & API Testing**: Complete suite for API development and debugging
 - **JQ JSON Processing**: Parse, filter, and transform JSON with ease
