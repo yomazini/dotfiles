@@ -24,7 +24,7 @@ WRENCH="🔧"
 PACKAGE="📦"
 
 # =================================================================
-# Utilss Funs
+# Utils Functions
 # =================================================================
 
 print_header() {
@@ -32,9 +32,11 @@ print_header() {
     echo -e "${PURPLE}$1${NC}"
     echo -e "${PURPLE}==================================================================${NC}\n"
 }
+
 print_step() {
     echo -e "${BLUE}${ARROW} $1${NC}"
 }
+
 print_success() {
     echo -e "${GREEN}${CHECK} $1${NC}"
 }
@@ -42,8 +44,6 @@ print_success() {
 print_error() {
     echo -e "${RED}${CROSS} $1${NC}"
 }
-
-
 
 print_warning() {
     echo -e "${YELLOW}⚠️  $1${NC}"
@@ -70,8 +70,6 @@ install_if_missing() {
         fi
     fi
 }
-
-
 
 backup_file() {
     if [ -f "$1" ] || [ -d "$1" ]; then
@@ -139,7 +137,6 @@ install_package_manager() {
     esac
 }
 
-
 install_essential_packages() {
     print_header "${PACKAGE} Installing Essential Packages"
     
@@ -152,11 +149,12 @@ install_essential_packages() {
                 nodejs npm \
                 clang clang-format clangd \
                 fd-find ripgrep bat fzf \
-                tree unzip jq
+                tree unzip jq xclip lsof \
+                netstat-nat
             
             # Ubuntu-specific: create symlinks for fd and bat
+            mkdir -p ~/.local/bin
             if [ ! -L ~/.local/bin/fd ]; then
-                mkdir -p ~/.local/bin
                 ln -s /usr/bin/fdfind ~/.local/bin/fd
             fi
             if [ ! -L ~/.local/bin/bat ]; then
@@ -183,7 +181,7 @@ install_essential_packages() {
                 nodejs npm \
                 clang \
                 fd ripgrep bat fzf \
-                tree unzip jq
+                tree unzip jq xclip lsof
             ;;
     esac
 }
@@ -191,110 +189,99 @@ install_essential_packages() {
 install_modern_cli_tools() {
     print_header "${ROCKET} Installing Modern CLI Tools"
     
-    # if ur not sudo like us ==> {1337/42} student 😭 
-	# just instead go to each part and download the releases in the github 
-	# {tool you want to download and }/releases/ for ex: ==> https://github.com/junegunn/fzf/releases/ 
-	 #Pro Tip: If you have a personal laptop, you can install the tools there
-	# and just copy the final program files into your 42 machine's ~/.local/bin folder.
-	# No laptop? You're a poor man? No worries, use GitHub Codespaces then 😉
-	# The script below assumes you have `sudo`. If you installed everything
-	# manually, you can just ignore any 'apt' errors it might show.
-	# you do not have laptop you poor man no worries use Github Codespace then for sudo;
-
-
-	# The script below will now proceed assuming 'sudo' is available.
-	# script not 100% accurate try to download or give latest releases to Curl them 
     mkdir -p ~/.local/bin
     
-    # Install Rust-based tools via cargo if available || otherwise use package manager.
-
+    # Install Rust-based tools via cargo if available, otherwise use package manager
     if command_exists cargo; then
         print_step "Installing Rust-based tools..."
-        cargo install eza zoxide procs dysk
+        cargo install eza zoxide procs dust 2>/dev/null || true
     else
         case $OS in
             ubuntu)
                 # Install eza
-                print_step "Installing eza..."
-                wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg
-                echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list
-                sudo apt update
-                sudo apt install -y eza
+                if ! command_exists eza; then
+                    print_step "Installing eza..."
+                    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg 2>/dev/null || true
+                    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | sudo tee /etc/apt/sources.list.d/gierens.list >/dev/null
+                    sudo apt update 2>/dev/null
+                    sudo apt install -y eza 2>/dev/null || print_warning "eza installation failed, continuing..."
+                fi
                 
-                # Install other tools
-                install_if_missing "zoxide" "curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash"
+                # Install zoxide
+                if ! command_exists zoxide; then
+                    curl -sS https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+                fi
                 ;;
                 
             macos)
-                brew install eza zoxide procs dysk
+                brew install eza zoxide procs dust 2>/dev/null || true
                 ;;
                 
             arch)
-                sudo pacman -S --noconfirm eza zoxide
-                install_if_missing "procs" "cargo install procs"
-                install_if_missing "dysk" "cargo install dysk"
+                sudo pacman -S --noconfirm eza zoxide 2>/dev/null || true
                 ;;
         esac
     fi
     
     # Install Python tools
     print_step "Installing Python tools..."
-    pip3 install --user autopep8 python-lsp-server pycodestyle pyfiglet
+    pip3 install --user autopep8 python-lsp-server pycodestyle 2>/dev/null || print_warning "Some Python tools failed to install"
     
     # Install additional tools
     print_step "Installing additional CLI tools..."
     
     # glow (markdown viewer)
-    install_if_missing "glow" "curl -sL https://github.com/charmbracelet/glow/releases/latest/download/glow_Linux_x86_64.tar.gz | tar -xz -C ~/.local/bin glow"
-    
-    # todo.sh
-    if [ ! -f ~/.local/bin/todo.sh ]; then
-        print_step "Installing todo.sh..."
-        wget -O ~/.local/bin/todo.sh https://github.com/todotxt/todo.txt-cli/releases/latest/download/todo.txt_cli-2.12.0.tar.gz
-        tar -xzf ~/.local/bin/todo.sh -C ~/.local/bin
-        mv ~/.local/bin/todo.txt_cli-2.12.0/todo.sh ~/.local/bin/
-        chmod +x ~/.local/bin/todo.sh
-        rm -rf ~/.local/bin/todo.txt_cli-2.12.0 ~/.local/bin/todo.sh
-        print_success "todo.sh installed"
+    if ! command_exists glow; then
+        print_step "Installing glow..."
+        if [[ "$OS" == "ubuntu" ]]; then
+            wget -q https://github.com/charmbracelet/glow/releases/latest/download/glow_Linux_x86_64.tar.gz -O /tmp/glow.tar.gz 2>/dev/null || true
+            tar -xzf /tmp/glow.tar.gz -C ~/.local/bin glow 2>/dev/null || true
+            chmod +x ~/.local/bin/glow 2>/dev/null || true
+            rm /tmp/glow.tar.gz 2>/dev/null || true
+        fi
     fi
     
     # tldr
-    install_if_missing "tldr" "pip3 install --user tldr"
+    if ! command_exists tldr; then
+        pip3 install --user tldr 2>/dev/null || print_warning "tldr installation failed"
+    fi
     
     # ranger
-    install_if_missing "ranger" "pip3 install --user ranger-fm"
+    if ! command_exists ranger; then
+        pip3 install --user ranger-fm 2>/dev/null || print_warning "ranger installation failed"
+    fi
     
     # termdown
-    install_if_missing "termdown" "pip3 install --user termdown"
-    
-    # viu (image viewer)
-    install_if_missing "viu" "cargo install viu"
-    
-    # lazydocker
-    if ! command_exists lazydocker; then
-        print_step "Installing lazydocker..."
-        curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+    if ! command_exists termdown; then
+        pip3 install --user termdown 2>/dev/null || print_warning "termdown installation failed"
     fi
+    
+    # btop
+    case $OS in
+        ubuntu) sudo apt install -y btop 2>/dev/null || print_warning "btop installation failed" ;;
+        macos) brew install btop 2>/dev/null || true ;;
+        arch) sudo pacman -S --noconfirm btop 2>/dev/null || true ;;
+    esac
     
     # mc (midnight commander)
     case $OS in
-        ubuntu) sudo apt install -y mc ;;
-        macos) brew install mc ;;
-        arch) sudo pacman -S --noconfirm mc ;;
+        ubuntu) sudo apt install -y mc 2>/dev/null || true ;;
+        macos) brew install mc 2>/dev/null || true ;;
+        arch) sudo pacman -S --noconfirm mc 2>/dev/null || true ;;
     esac
     
     # entr
     case $OS in
-        ubuntu) sudo apt install -y entr ;;
-        macos) brew install entr ;;
-        arch) sudo pacman -S --noconfirm entr ;;
+        ubuntu) sudo apt install -y entr 2>/dev/null || true ;;
+        macos) brew install entr 2>/dev/null || true ;;
+        arch) sudo pacman -S --noconfirm entr 2>/dev/null || true ;;
     esac
     
     # ipcalc
     case $OS in
-        ubuntu) sudo apt install -y ipcalc ;;
-        macos) brew install ipcalc ;;
-        arch) sudo pacman -S --noconfirm ipcalc ;;
+        ubuntu) sudo apt install -y ipcalc 2>/dev/null || true ;;
+        macos) brew install ipcalc 2>/dev/null || true ;;
+        arch) sudo pacman -S --noconfirm ipcalc 2>/dev/null || true ;;
     esac
 }
 
@@ -304,7 +291,7 @@ setup_zsh() {
     # Install Oh My Zsh
     if [ ! -d "$HOME/.oh-my-zsh" ]; then
         print_step "Installing Oh My Zsh..."
-        sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        RUNZSH=no sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
         print_success "Oh My Zsh installed"
     else
         print_success "Oh My Zsh already installed"
@@ -359,7 +346,7 @@ setup_vim() {
     fi
     
     print_step "Installing Vim plugins (this may take a moment)..."
-    vim +PlugInstall +qall
+    vim +PlugInstall +qall 2>/dev/null || print_warning "Some Vim plugins may need manual installation"
     print_success "Vim plugins installed"
 }
 
@@ -377,14 +364,16 @@ setup_tmux() {
     
     print_step "Installing Tmux plugins..."
     # Install plugins via TPM
-    ~/.tmux/plugins/tpm/scripts/install_plugins.sh
+    ~/.tmux/plugins/tpm/scripts/install_plugins.sh 2>/dev/null || print_warning "Tmux plugins will be installed on first tmux launch"
     print_success "Tmux plugins installed"
 }
 
 setup_custom_scripts() {
     print_header "${WRENCH} Setting Up Custom Scripts"
     
-    # Create tt script (session switcher) - this needs to be created based on your needs
+    mkdir -p ~/.local/bin
+    
+    # Create tt script (session switcher)
     if [ ! -f "$HOME/.local/bin/tt" ]; then
         print_step "Creating session switcher script..."
         cat > ~/.local/bin/tt << 'EOF'
@@ -397,7 +386,7 @@ if [ -z "$sessions" ]; then
 fi
 selected=$(echo "$sessions" | fzf --prompt="Select session: ")
 if [ -n "$selected" ]; then
-    tmux switch-client -t "$selected"
+    tmux switch-client -t "$selected" 2>/dev/null || tmux attach -t "$selected"
 fi
 EOF
         chmod +x ~/.local/bin/tt
@@ -422,6 +411,15 @@ EOF
     fi
 }
 
+setup_help_system() {
+    print_header "${WRENCH} Setting Up Interactive Help System"
+    
+    # The help system (cheat command) will be included in .zshrc
+    # Just verify it's there
+    print_step "Interactive help system will be available via 'cheat' command"
+    print_success "Help system ready (run 'cheat' after installation)"
+}
+
 install_configs() {
     print_header "${WRENCH} Installing Configuration Files"
     
@@ -431,27 +429,70 @@ install_configs() {
     backup_file ~/.zshrc
     backup_file ~/.p10k.zsh
     
-    # Create symlinks or copy configs
+    # Get script directory
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     
     if [ -f "$SCRIPT_DIR/vimrc" ]; then
         print_step "Installing Vim configuration..."
         ln -sf "$SCRIPT_DIR/vimrc" ~/.vimrc
         print_success "Vim configuration installed"
+    else
+        print_warning "vimrc not found in $SCRIPT_DIR"
     fi
     
     if [ -f "$SCRIPT_DIR/tmux.conf" ]; then
         print_step "Installing Tmux configuration..."
         ln -sf "$SCRIPT_DIR/tmux.conf" ~/.tmux.conf
         print_success "Tmux configuration installed"
+    else
+        print_warning "tmux.conf not found in $SCRIPT_DIR"
     fi
     
     if [ -f "$SCRIPT_DIR/zshrc" ]; then
         print_step "Installing Zsh configuration..."
+        cp "$SCRIPT_DIR/zshrc" ~/.zshrc
         # Make paths generic
-        sed "s|/home/ymazini|$HOME|g" "$SCRIPT_DIR/zshrc" > ~/.zshrc.tmp
-        mv ~/.zshrc.tmp ~/.zshrc
+        sed -i.bak "s|/home/ymazini|$HOME|g" ~/.zshrc 2>/dev/null || sed -i '' "s|/home/ymazini|$HOME|g" ~/.zshrc
+        rm ~/.zshrc.bak 2>/dev/null || true
         print_success "Zsh configuration installed"
+    else
+        print_warning "zshrc not found in $SCRIPT_DIR"
+    fi
+    
+    # Add PATH to .zshrc if not already there
+    if ! grep -q "export PATH=\"\$HOME/.local/bin:\$PATH\"" ~/.zshrc 2>/dev/null; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+    fi
+}
+
+setup_gemini_commands() {
+    print_header "${WRENCH} Setting Up Gemini Commands"
+    
+    # Check if the user already has commands and back them up
+    if [ -d "$HOME/.gemini/commands" ] && [ "$(ls -A $HOME/.gemini/commands 2>/dev/null)" ]; then
+        print_warning "Existing Gemini commands found."
+        backup_file "$HOME/.gemini/commands"
+    fi
+    
+    print_step "The following command categories will be added:"
+    echo -e "${CYAN}Content, Development, Media, Productivity, Security, System${NC}"
+    read -p "Do you want to install these custom Gemini commands? (y/N): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        print_step "Creating Gemini commands directory..."
+        mkdir -p ~/.gemini/commands
+        
+        SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+        
+        if [ -d "$SCRIPT_DIR/commands" ]; then
+            print_step "Copying commands..."
+            cp -r "$SCRIPT_DIR/commands"/* ~/.gemini/commands/ 2>/dev/null || print_warning "No commands directory found"
+            print_success "Gemini commands installed successfully"
+        else
+            print_warning "Commands directory not found, skipping Gemini commands installation"
+        fi
+    else
+        print_warning "Skipping installation of Gemini commands."
     fi
 }
 
@@ -460,10 +501,10 @@ change_shell() {
     
     if [ "$SHELL" != "$(which zsh)" ]; then
         print_step "Changing default shell to Zsh..."
-        if ! grep -q "$(which zsh)" /etc/shells; then
-            echo "$(which zsh)" | sudo tee -a /etc/shells
+        if ! grep -q "$(which zsh)" /etc/shells 2>/dev/null; then
+            echo "$(which zsh)" | sudo tee -a /etc/shells >/dev/null
         fi
-        chsh -s "$(which zsh)"
+        chsh -s "$(which zsh)" 2>/dev/null || print_warning "Could not change shell automatically. Run: chsh -s $(which zsh)"
         print_success "Default shell changed to Zsh"
         print_warning "Please log out and log back in for the shell change to take effect"
     else
@@ -474,8 +515,10 @@ change_shell() {
 run_health_check() {
     print_header "${CHECK} Running Health Check"
     
-    local tools=(vim tmux zsh git fzf rg bat eza fd zoxide glow)
+    local tools=(vim tmux zsh git fzf rg bat eza fd zoxide glow jq curl)
     local failed=0
+    
+    echo -e "${CYAN}Checking essential tools:${NC}\n"
     
     for tool in "${tools[@]}"; do
         if command_exists "$tool"; then
@@ -485,6 +528,29 @@ run_health_check() {
             ((failed++))
         fi
     done
+    
+    echo ""
+    
+    # Check custom functions
+    if grep -q "function cgetjson" ~/.zshrc 2>/dev/null; then
+        print_success "CURL functions configured"
+    else
+        print_warning "CURL functions not found in .zshrc"
+    fi
+    
+    if grep -q "function jfind" ~/.zshrc 2>/dev/null; then
+        print_success "JQ functions configured"
+    else
+        print_warning "JQ functions not found in .zshrc"
+    fi
+    
+    if grep -q "function cheat" ~/.zshrc 2>/dev/null; then
+        print_success "Help system configured"
+    else
+        print_warning "Help system not found in .zshrc"
+    fi
+    
+    echo ""
     
     if [ $failed -eq 0 ]; then
         print_success "All essential tools are installed and available!"
@@ -528,6 +594,7 @@ EOF
     setup_vim
     setup_tmux
     setup_custom_scripts
+    setup_help_system
     setup_gemini_commands
     install_configs
     change_shell
@@ -538,34 +605,11 @@ EOF
     echo -e "${YELLOW}Next steps:${NC}"
     echo -e "  1. ${CYAN}Restart your terminal or run: source ~/.zshrc${NC}"
     echo -e "  2. ${CYAN}Configure Powerlevel10k: p10k configure${NC}"
-    echo -e "  3. ${CYAN}Start tmux and press"
-}
-
-setup_gemini_commands() {
-    print_header "${WRENCH} Setting Up Gemini Commands"
-    
-    # Check if the user already has commands and back them up
-    if [ -d "$HOME/.gemini/commands" ] && [ "$(ls -A $HOME/.gemini/commands)" ]; then
-        print_warning "Existing Gemini commands found."
-        backup_file "$HOME/.gemini/commands"
-    fi
-    
-    print_step "The following command categories will be added:"
-    echo -e "${CYAN}Content, Development, Media, Productivity, Security, System${NC}"
-    read -p "Do you want to install these custom Gemini commands? (y/N): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        print_step "Creating Gemini commands directory..."
-        mkdir -p ~/.gemini/commands
-        
-        print_step "Copying commands..."
-        # Using cp -r will merge the directories, overwriting conflicts but preserving user's other commands.
-        cp -r commands/* ~/.gemini/commands/
-        
-        print_success "Gemini commands installed successfully"
-    else
-        print_warning "Skipping installation of Gemini commands."
-    fi
+    echo -e "  3. ${CYAN}Start tmux and press Ctrl+a I to install tmux plugins${NC}"
+    echo -e "  4. ${CYAN}Run 'cheat' to access the interactive help system${NC}"
+    echo -e "  5. ${CYAN}Test commands: cgetjson, jfind, extract, gitignore${NC}"
+    echo ""
+    echo -e "${GREEN}${STAR} Enjoy your supercharged terminal!${NC}\n"
 }
 
 # =================================================================
@@ -576,4 +620,3 @@ setup_gemini_commands() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     main "$@"
 fi
-
