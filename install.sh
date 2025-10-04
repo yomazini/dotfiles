@@ -440,7 +440,7 @@ install_modern_cli_tools() {
     mkdir -p ~/.local/bin
     
     # Install Rust-based tools via cargo if available, otherwise use package manager
-    if command_exists cargo; then
+    if command_exists casdfasdfargo; then
         print_step "Installing Rust-based tools..."
         cargo install eza zoxide procs dust 2>/dev/null || true
     else
