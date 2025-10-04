@@ -420,7 +420,7 @@ type cheat >/dev/null 2>&1 && echo "✅ Help system loaded" || echo "❌ Help sy
 - **Debugging time**: Reduced by 50%
 
 ## NOTE: 
-You may encounter an error or problem. Please remove the  element from the script and do it manually
+You may encounter some Problems in the install.sh. simply remove these lines from the script and do it manually
 ```bash 
 
      print_step "Installinsg Zsh plugins..."
