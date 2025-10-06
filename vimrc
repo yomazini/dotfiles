@@ -1,19 +1,4 @@
 
-"╔══════════════════════════════════════════════════════════════════╗
-"║                                                                  ║
-"║   🚀 Ultimate Developer Dotfiles Vimrc 🚀         ║
-"║                                                                  ║
-"║   Transform your terminal into a modern development environment  ║
-"║                                                                  ║
-"║   Author: Youssef Mazini (ymazini)                              ║
-"║   GitHub: https://github.com/yomazini/dotfiles                  ║
-"║                                                                  ║
-"╚══════════════════════════════════════════════════════════════════╝
-
-" ===================================================================
-" === A Modern Vim IDE Configuration (Corrected Version) ============
-" ===================================================================
-
 " --- Section 1: Plugin Management (vim-plug) ---
 call plug#begin('~/.vim/plugged')
 
