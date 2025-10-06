@@ -1,15 +1,3 @@
-"
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                  ║
-║   🚀 Ultimate Developer Dotfiles Zshrc 🚀         ║
-║                                                                  ║
-║   Transform your terminal into a modern development environment  ║
-║                                                                  ║
-║   Author: Youssef Mazini (ymazini)                              ║
-║   GitHub: https://github.com/yomazini/dotfiles                  ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
-"
 
 # -- Powerlevel10k Instant Prompt (MUST be at the very top) --
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
