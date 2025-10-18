@@ -1053,6 +1053,7 @@ chelp() {
     esac
 }
 
+alias diff='delta --side-by-side' 
 
 
 # ===================
