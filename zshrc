@@ -1052,8 +1052,8 @@ chelp() {
             ;;
     esac
 }
-
-alias diff='delta --side-by-side' 
+# sudo apt install git-delta
+alias difff='delta --side-by-side' 
 
 
 # ===================
