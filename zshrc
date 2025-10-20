@@ -1056,6 +1056,273 @@ chelp() {
 alias difff='delta --side-by-side' 
 
 
+
+
+# Function to initialize VS Code C++ development environment.
+# Creates .vscode configs and .clang-format only.
+cpp-init() {
+    echo "Initializing VS Code C++ environment in current directory: $(pwd)"
+
+    # --- 1. Generate .clang-format ---
+    cat << 'EOF' > .clang-format
+# --- Professional C++ Formatting Style (RECOMMENDED: Space-Based Indentation) ---
+BasedOnStyle: Google
+
+# --- Indentation ---
+# Use 4 SPACES for indentation. This is the most common and consistent standard.
+UseTab: Never
+IndentWidth: 4
+
+# --- Braces and Code Structure ---
+# Use Allman-style braces (braces on new lines). Hugely improves readability.
+# void func()
+# {
+#     ...
+# }
+BreakBeforeBraces: Allman
+AllowShortBlocksOnASingleLine: false
+AllowShortFunctionsOnASingleLine: None
+
+# --- Function Calls and Parameters ---
+# Prevents clang-format from cramming long lists of parameters onto one line.
+# Forces a clean, one-parameter-per-line layout for long function signatures.
+BinPackParameters: false
+BinPackArguments: false
+
+# --- Pointer and Reference Alignment ---
+# Align pointer/reference symbols to the type (e.g., int* p).
+# Reinforces that the type is "pointer-to-int".
+PointerAlignment: Right
+
+# --- Include Directives ---
+# Automatically sorts includes and groups them by category.
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex: '^<.*\.h>'
+    Priority: 1  # C-style standard library headers
+  - Regex: '^<.*>'
+    Priority: 2  # C++ standard library headers
+  - Regex: '.*'
+    Priority: 3  # Project-local headers ("MyClass.hpp")
+
+# --- General Style & Whitespace ---
+ColumnLimit: 80
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: true
+EOF
+    echo "✓ Generated .clang-format"
+
+    # --- 2. Generate VS Code Configuration ---
+    mkdir -p .vscode
+
+    # c_cpp_properties.json
+    cat << 'EOF' > .vscode/c_cpp_properties.json
+{
+  "configurations": [
+    {
+      "name": "linux-gcc-x64",
+      "includePath": [
+        "${workspaceFolder}/**"
+      ],
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "linux-gcc-x64",
+      "compilerArgs": [
+        ""
+      ]
+    }
+  ],
+  "version": 4
+}
+EOF
+
+    # gdb-wrapper.sh
+    cat << 'EOF' > .vscode/gdb-wrapper.sh
+#!/bin/sh
+exec flatpak-spawn --host gdb "$@"
+EOF
+    chmod +x .vscode/gdb-wrapper.sh
+
+    # launch.json
+    cat << 'EOF' > .vscode/launch.json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "C++ build"
+        }
+    ]
+}
+EOF
+
+    # settings.json
+    cat << 'EOF' > .vscode/settings.json
+{
+  "files.associations": {
+    "ostream": "cpp",
+    "array": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "cctype": "cpp",
+    "charconv": "cpp",
+    "chrono": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "compare": "cpp",
+    "concepts": "cpp",
+    "cstdarg": "cpp",
+    "cstddef": "cpp",
+    "cstdint": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cstring": "cpp",
+    "ctime": "cpp",
+    "cwchar": "cpp",
+    "cwctype": "cpp",
+    "deque": "cpp",
+    "map": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "exception": "cpp",
+    "algorithm": "cpp",
+    "functional": "cpp",
+    "iterator": "cpp",
+    "memory": "cpp",
+    "memory_resource": "cpp",
+    "numeric": "cpp",
+    "optional": "cpp",
+    "random": "cpp",
+    "ratio": "cpp",
+    "string_view": "cpp",
+    "system_error": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "format": "cpp",
+    "initializer_list": "cpp",
+    "iomanip": "cpp",
+    "iosfwd": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "limits": "cpp",
+    "new": "cpp",
+    "numbers": "cpp",
+    "span": "cpp",
+    "sstream": "cpp",
+    "stdexcept": "cpp",
+    "streambuf": "cpp",
+    "text_encoding": "cpp",
+    "cinttypes": "cpp",
+    "typeinfo": "cpp",
+    "variant": "cpp"
+  },
+  "C_Cpp_Runner.cCompilerPath": "gcc",
+  "C_Cpp_Runner.cppCompilerPath": "g++",
+  "C_Cpp_Runner.debuggerPath": "gdb",
+  "C_Cpp_Runner.cStandard": "",
+  "C_Cpp_Runner.cppStandard": "",
+  "C_Cpp_Runner.msvcBatchPath": "",
+  "C_Cpp_Runner.useMsvc": false,
+  "C_Cpp_Runner.warnings": [
+    "-Wall",
+    "-Wextra",
+    "-Wpedantic",
+    "-Wshadow",
+    "-Wformat=2",
+    "-Wcast-align",
+    "-Wconversion",
+    "-Wsign-conversion",
+    "-Wnull-dereference"
+  ],
+  "C_Cpp_Runner.msvcWarnings": [
+    "/W4",
+    "/permissive-",
+    "/w14242",
+    "/w14287",
+    "/w14296",
+    "/w14311",
+    "/w14826",
+    "/w44062",
+    "/w44242",
+    "/w14905",
+    "/w14906",
+    "/w14263",
+    "/w44265",
+    "/w14928"
+  ],
+  "C_Cpp_Runner.enableWarnings": true,
+  "C_Cpp_Runner.warningsAsError": false,
+  "C_Cpp_Runner.compilerArgs": [],
+  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.includePaths": [],
+  "C_Cpp_Runner.includeSearch": [
+    "*",
+    "**/*"
+  ],
+  "C_Cpp_Runner.excludeSearch": [
+    "**/build",
+    "**/build/**",
+    "**/.*",
+    "**/.*/**",
+    "**/.vscode",
+    "**/.vscode/**"
+  ],
+  "C_Cpp_Runner.useAddressSanitizer": false,
+  "C_Cpp_Runner.useUndefinedSanitizer": false,
+  "C_Cpp_Runner.useLeakSanitizer": false,
+  "C_Cpp_Runner.showCompilationTime": false,
+  "C_Cpp_Runner.useLinkTimeOptimization": false,
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
+}
+EOF
+
+    # tasks.json
+    cat << 'EOF' > .vscode/tasks.json
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "C++ build",
+            "type": "shell",
+            "command": "g++",
+            "args": ["-g", "-std=c++17", "${file}", "-o", "${fileDirname}/${fileBasenameNoExtension}"],
+            "group": {"kind": "build", "isDefault": true},
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}
+EOF
+
+    echo "✓ Generated VS Code configurations in .vscode/"
+    echo ""
+    echo "Created files:"
+    echo "  - .clang-format"
+    echo "  - .vscode/c_cpp_properties.json"
+    echo "  - .vscode/gdb-wrapper.sh"
+    echo "  - .vscode/launch.json"
+    echo "  - .vscode/settings.json"
+    echo "  - .vscode/tasks.json"
+    echo ""
+    echo "✓ Initialization complete!"
+}
+
+# Alias for quick access
+alias cppi='cpp-init'
+
+
+
+
+
 # ===================
 
 
