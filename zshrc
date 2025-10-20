@@ -1056,8 +1056,6 @@ chelp() {
 alias difff='delta --side-by-side' 
 
 
-
-
 # Function to initialize VS Code C++ development environment.
 # Creates .vscode configs and .clang-format only.
 cpp-init() {
@@ -1164,9 +1162,10 @@ EOF
 }
 EOF
 
-    # settings.json
+    # settings.json (with protection against auto-modification)
     cat << 'EOF' > .vscode/settings.json
 {
+  "C_Cpp_Runner.autoConfigure": false,
   "files.associations": {
     "ostream": "cpp",
     "array": "cpp",
@@ -1304,22 +1303,28 @@ EOF
 EOF
 
     echo "✓ Generated VS Code configurations in .vscode/"
+    
+    # Protect launch.json from auto-modification
+    chmod 644 .vscode/launch.json
+    
     echo ""
     echo "Created files:"
     echo "  - .clang-format"
     echo "  - .vscode/c_cpp_properties.json"
     echo "  - .vscode/gdb-wrapper.sh"
-    echo "  - .vscode/launch.json"
-    echo "  - .vscode/settings.json"
+    echo "  - .vscode/launch.json (protected from auto-edits)"
+    echo "  - .vscode/settings.json (with autoConfigure: false)"
     echo "  - .vscode/tasks.json"
     echo ""
     echo "✓ Initialization complete!"
+    echo ""
+    echo "NOTE: If launch.json still gets modified:"
+    echo "  1. Disable 'C/C++ Runner' extension (Ctrl+Shift+X)"
+    echo "  2. Or run: chmod 444 .vscode/launch.json (make read-only)"
 }
 
 # Alias for quick access
 alias cppi='cpp-init'
-
-
 
 
 
