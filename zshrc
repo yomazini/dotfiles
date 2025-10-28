@@ -1329,6 +1329,10 @@ alias cppi='cpp-init'
 
 
 # ===================
+# AWS-CLI shit
+autoload bashcompinit && bashcompinit
+complete -C '/usr/local/bin/aws_completer' aws
+export AWS_CLI_AUTO_PROMPT=on
 
 
 # --- FIX FOR KEYBOARD INPUT ISSUES ON WAYLAND; Simple Fix---
