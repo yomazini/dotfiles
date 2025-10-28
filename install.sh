@@ -498,6 +498,11 @@ install_modern_cli_tools() {
     if ! command_exists ranger; then
         pip3 install --user ranger-fm 2>/dev/null || print_warning "ranger installation failed"
     fi
+
+        # fuck // name of the tool huh
+    if ! command_exists fuck; then
+        pip3 install --user fuck 2>/dev/null || print_warning "fuck installation failed"
+    fi
     
     # termdown
     if ! command_exists termdown; then
