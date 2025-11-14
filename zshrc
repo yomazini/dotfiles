@@ -1064,50 +1064,74 @@ cpp-init() {
     # --- 1. Generate .clang-format ---
     cat << 'EOF' > .clang-format
 # --- Professional C++ Formatting Style (RECOMMENDED: Space-Based Indentation) ---
-BasedOnStyle: Google
 
-# --- Indentation ---
-# Use 4 SPACES for indentation. This is the most common and consistent standard.
+# ss--- Professional C++ Formatting Style (RECOMMENDED: Space-Based Indentation) ---
+
+BasedOnStyle: Google
 UseTab: Never
 IndentWidth: 4
-
-# --- Braces and Code Structure ---
-# Use Allman-style braces (braces on new lines). Hugely improves readability.
-# void func()
-# {
-#     ...
-# }
+ContinuationIndentWidth: 4
 BreakBeforeBraces: Allman
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: Never
 AllowShortFunctionsOnASingleLine: None
-
-# --- Function Calls and Parameters ---
-# Prevents clang-format from cramming long lists of parameters onto one line.
-# Forces a clean, one-parameter-per-line layout for long function signatures.
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
 BinPackParameters: false
 BinPackArguments: false
-
-# --- Pointer and Reference Alignment ---
-# Align pointer/reference symbols to the type (e.g., int* p).
-# Reinforces that the type is "pointer-to-int".
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowAllArgumentsOnNextLine: false
 PointerAlignment: Right
-
-# --- Include Directives ---
-# Automatically sorts includes and groups them by category.
-SortIncludes: true
+ReferenceAlignment: Right
+SortIncludes: CaseSensitive
 IncludeBlocks: Regroup
 IncludeCategories:
   - Regex: '^<.*\.h>'
-    Priority: 1  # C-style standard library headers
+    Priority: 1
   - Regex: '^<.*>'
-    Priority: 2  # C++ standard library headers
+    Priority: 2
   - Regex: '.*'
-    Priority: 3  # Project-local headers ("MyClass.hpp")
-
-# --- General Style & Whitespace ---
+    Priority: 3
 ColumnLimit: 80
 SpaceBeforeParens: ControlStatements
 SpaceAfterCStyleCast: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1
+AlwaysBreakAfterReturnType: None
+BreakConstructorInitializers: BeforeComma
+ConstructorInitializerIndentWidth: 4
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: None
+AlignConsecutiveMacros: Consecutive
+BreakBeforeBinaryOperators: NonAssignment
+NamespaceIndentation: None
+CompactNamespaces: false
+AccessModifierOffset: -4
+ReflowComments: true
+AlignTrailingComments: true
+SpacesBeforeTrailingComments: 2
+SeparateDefinitionBlocks: Always
+PackConstructorInitializers: Never
+BreakStringLiterals: true
+IndentPPDirectives: AfterHash
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceInEmptyParentheses: false
+SpacesInAngles: Never
+SpacesInContainerLiterals: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+PenaltyBreakBeforeFirstCallParameter: 100
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
+PenaltyReturnTypeOnItsOwnLine: 200
+SortUsingDeclarations: true
+
+
+
 EOF
     echo "✓ Generated .clang-format"
 
