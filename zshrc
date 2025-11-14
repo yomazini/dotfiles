@@ -1101,7 +1101,7 @@ AlwaysBreakAfterReturnType: None
 BreakConstructorInitializers: BeforeComma
 ConstructorInitializerIndentWidth: 4
 AlignConsecutiveAssignments: Consecutive
-AlignConsecutiveDeclarations: None
+AlignConsecutiveDeclarations: Consecutive
 AlignConsecutiveMacros: Consecutive
 BreakBeforeBinaryOperators: NonAssignment
 NamespaceIndentation: None
