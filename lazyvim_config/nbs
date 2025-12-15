@@ -1,0 +1,29 @@
+#double check it beta
+
+#!/bin/bash
+NOTES_DIR="/home/$USER/notes"
+
+echo "🧠 Syncing Second Brain..."
+cd "$NOTES_DIR" || exit
+
+# 1. Pull latest changes from Cloud (School/Laptop)
+echo "⬇️  Pulling updates..."
+git pull --rebase origin main
+
+# 2. Add local changes
+git add .
+
+# 3. Commit (if changes exist)
+if git diff-index --quiet HEAD --; then
+    echo "✅ No local changes to save."
+else
+    TIMESTAMP=$(date "+%Y-%m-%d %H:%M")
+    git commit -m "Brain dump: $TIMESTAMP"
+    echo "📸 Changes committed."
+fi
+
+# 4. Push to Cloud
+echo "⬆️  Pushing to GitHub..."
+git push origin main
+
+echo "✨ Done."
