@@ -1,29 +1,48 @@
 return {
-  {
-    "epwalsh/obsidian.nvim",
-    version = "*",                -- Recommended
-    lazy = true,
-    ft = "markdown",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    keys = {
-      { "<leader>nn", ":e ~/notes/README.md<cr>", desc = "Notes Home" },
-      { "<leader>nf", ":ObsidianQuickSwitch<cr>", desc = "Find Note" },
-      { "<leader>ng", ":ObsidianSearch<cr>", desc = "Search Notes" },
-      { "<leader>nt", ":ObsidianToday<cr>", desc = "Today Note" },
-      { "<leader>on", ":ObsidianNew<cr>", desc = "New Note" },
+  "epwalsh/obsidian.nvim",
+  version = "*",
+  lazy = false, -- Load immediately
+
+  dependencies = { "nvim-lua/plenary.nvim" },
+
+  keys = {
+    -- FAILSAFE: Open the file directly using Vim command, NOT plugin command
+    {
+      "<leader>nn",
+      function()
+        vim.cmd("e ~/notes/index.md")
+      end,
+      desc = "Notes Index (Home)",
     },
-    opts = {
-      workspaces = {
-        { name = "notes", path = "~/notes" },
-      },
-      daily_notes = {
-        folder = "daily",
-        date_format = "%Y-%m-%d",
-      },
-      completion = {
-        nvim_cmp = true,
-        min_chars = 2,
+
+    { "<leader>on", "<cmd>ObsidianNew<cr>", desc = "Create New Note" },
+    { "<leader>ng", "<cmd>ObsidianSearch<cr>", desc = "Search Notes" },
+  },
+
+  opts = {
+    workspaces = {
+      {
+        name = "brain",
+        path = "~/notes",
       },
     },
+
+    -- Safety: No completion to avoid crash
+    completion = { nvim_cmp = false },
+
+    -- ID Gen
+    note_id_func = function(title)
+      local suffix = ""
+      if title ~= nil then
+        suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+      else
+        for _ = 1, 4 do
+          suffix = suffix .. string.char(math.random(65, 90))
+        end
+      end
+      return tostring(os.time()) .. "-" .. suffix
+    end,
+
+    disable_frontmatter = false,
   },
 }
