@@ -19,7 +19,8 @@ RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}🎓 Initializing LazyVim Setup (School Edition)...${NC}"
-
+# CHECK DO IT MANNUALY MUST EXPORT THE IMGS OFAPPIMAGE AS well ./nvim --appimage-extract && ls squashfs-root/usr/bin/nvim 
+echo "export MANPAGER='/home/thejoceph/.local/bin/squashfs-root/usr/bin/nvim +Man!'"
 # 1. Setup ~/.local/bin
 INSTALL_DIR="$HOME/.local/bin"
 mkdir -p "$INSTALL_DIR"
