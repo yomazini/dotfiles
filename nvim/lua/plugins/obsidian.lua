@@ -6,14 +6,21 @@ return {
   dependencies = { "nvim-lua/plenary.nvim" },
 
   keys = {
-    -- Navigation
-    { "<leader>oh", function() vim.cmd("e ~/notes/index.md") end, desc = "Obsidian Home" },
-    { "<leader>oi", function() vim.cmd("e ~/notes/inbox.md") end, desc = "Obsidian Inbox (Quick)" }, -- NEW
+    -- 1. WAR ROOM (The Command Center)
+    { "<leader>ww", function() vim.cmd("e ~/notes/1_Projects/00_V1_COMMAND_CENTER.md") end, desc = "V1 Command Center" },
     
-    -- Actions
-    { "<leader>on", "<cmd>ObsidianNew<cr>", desc = "New Note" },
+    -- 2. Inbox (Quick Capture)
+    { "<leader>oi", function() vim.cmd("e ~/notes/0_Inbox/inbox.md") end, desc = "Obsidian Inbox" },
+
+    -- 3. Navigation
+    { "<leader>oh", function() vim.cmd("e ~/notes/index.md") end, desc = "Obsidian Home" },
+    { "<leader>on", "<cmd>ObsidianNew<cr>", desc = "New Note (to Inbox)" },
     { "<leader>os", "<cmd>ObsidianSearch<cr>", desc = "Search Notes" },
     { "<leader>ot", "<cmd>ObsidianTemplate<cr>", desc = "Insert Template" },
+    
+    -- FIXED: <Space>om now correctly triggers Rename (Move)
+    -- This command lets you rename the file AND move it (e.g., type "1_Projects/NewName")
+    { "<leader>om", "<cmd>ObsidianRename<cr>", desc = "Move / Rename Note" }, 
   },
 
   config = function(_, opts)
@@ -25,8 +32,8 @@ return {
       group = group,
       pattern = "*.md",
       callback = function()
-        local current_file = vim.fn.expand("%:p")
-        if string.find(current_file, "/notes/") then
+        local relative = vim.fn.expand("%:p")
+        if string.find(relative, "/notes/") then
             local template_path = vim.fn.expand("~/notes/templates/standard-note.md")
             if vim.fn.filereadable(template_path) == 1 then
                 local lines = vim.fn.readfile(template_path)
@@ -52,11 +59,17 @@ return {
     workspaces = { { name = "brain", path = "~/notes" } },
     completion = { nvim_cmp = false },
     templates = { subdir = "templates" },
+    
+    new_notes_location = "notes_subdir",
+    notes_subdir = "0_Inbox",
+
     note_id_func = function(title)
       local suffix = ""
       if title ~= nil then suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
       else for _ = 1, 4 do suffix = suffix .. string.char(math.random(65, 90)) end end
       return tostring(os.time()) .. "-" .. suffix
     end,
+    
+    disable_frontmatter = false,
   },
 }
