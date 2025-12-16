@@ -4,7 +4,7 @@ return {
     optional = true,
     opts = function(_, opts)
       if opts.defaults then
-        opts.defaults["<leader>u"] = opts.defaults["<leader>u"] or { name = "+ui" }
+        opts.defaults["<leader>u"] = opts.defaults["<leader>u"] or { group = "ui" }
       end
     end,
   },
