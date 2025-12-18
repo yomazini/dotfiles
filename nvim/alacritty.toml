@@ -1,0 +1,126 @@
+# ============================================================================
+# Alacritty Config - Matching WezTerm Setup
+# .config/{fileshit}
+# Font, Colors, Opacity, Background Image
+# ============================================================================
+
+# IMPORT (if using newer Alacritty)
+import = []
+
+[env]
+TERM = "xterm-256color"
+
+# ========== WINDOW ==========
+[window]
+opacity = 0.95                    # Same as WezTerm (0.95)
+blur = true                       # Background blur (if supported)
+decorations = "None"              # No title bar (like WezTerm RESIZE)
+startup_mode = "Windowed"
+dynamic_padding = false
+padding = { x = 5, y = 4 }        # Same padding as WezTerm
+
+[window.dimensions]
+columns = 120
+lines = 30
+
+# ========== FONT ==========
+[font]
+size = 11.2                       # Exact same as WezTerm
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Regular"
+
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+[font.offset]
+x = 0
+y = 1                             # Matches WezTerm line_height 1.1
+
+# ========== COLORS (Catppuccin Mocha) ==========
+[colors.primary]
+background = "#1e1e2e"            # Same as WezTerm overlay
+foreground = "#cdd6f4"
+
+[colors.cursor]
+text = "#1e1e2e"
+cursor = "#f5e0dc"
+
+[colors.selection]
+text = "CellForeground"
+background = "#585b70"
+
+[colors.normal]
+black = "#45475a"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#f5c2e7"
+cyan = "#94e2d5"
+white = "#bac2de"
+
+[colors.bright]
+black = "#585b70"
+red = "#f38ba8"
+green = "#a6e3a1"
+yellow = "#f9e2af"
+blue = "#89b4fa"
+magenta = "#f5c2e7"
+cyan = "#94e2d5"
+white = "#a6adc8"
+
+# ========== CURSOR ==========
+[cursor]
+style = { shape = "Block", blinking = "On" }
+blink_interval = 750
+unfocused_hollow = true
+
+#
+# sudo apt install nitrogen
+# nitrogen ~/Pictures/Camera/wallpaper5.jpg
+# background_image = "/home/thejoceph/Pictures/Camera/wallpaper4.png" 
+
+# ========== SCROLLING ==========
+[scrolling]
+history = 10000
+multiplier = 3
+
+# ========== MOUSE ==========
+[mouse]
+hide_when_typing = true
+
+# ========== KEYBINDINGS ==========
+[[keyboard.bindings]]
+key = "F11"
+action = "ToggleFullscreen"       # Same as WezTerm F11
+
+[[keyboard.bindings]]
+key = "V"
+mods = "Control|Shift"
+action = "Paste"
+
+[[keyboard.bindings]]
+key = "C"
+mods = "Control|Shift"
+action = "Copy"
+
+# ========== BELL ==========
+[bell]
+animation = "EaseOutExpo"
+duration = 0
+color = "#ffffff"
+
+# ========== SELECTION ==========
+[selection]
+save_to_clipboard = true
