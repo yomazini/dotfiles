@@ -58,6 +58,28 @@ return {
     },
   },
 
+ -- Hada kay-wrrik: "SSH: production-server" f l-bar.
+  {
+    "nvim-lualine/lualine.nvim",
+    opts = function(_, opts)
+      local function remote_sshfs_status()
+        if package.loaded["remote-sshfs"] then
+          local api = require("remote-sshfs.api")
+          if api.is_connected() then
+            return "SSH: " .. (api.find_host_by_name("current") or "Remote")
+          end
+        end
+        return ""
+      end
+
+      table.insert(opts.sections.lualine_x, {
+        remote_sshfs_status,
+        color = { fg = "#ff9e64", gui = "bold" }, -- Orange color for warning
+      })
+    end,
+  },
+
+
   -- Bufferline (Cleaner Tabs)
   {
     "akinsho/bufferline.nvim",

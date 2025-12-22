@@ -60,6 +60,7 @@ return {
     },
   },
 
+
   -- Setup nvim-cmp for C++
   {
     "hrsh7th/nvim-cmp",
@@ -117,7 +118,7 @@ return {
       end
     end,
   },
-  
+
   -- Clangd Extensions
   {
     "p00f/clangd_extensions.nvim",
