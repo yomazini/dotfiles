@@ -9,32 +9,15 @@ return {
     end,
   },
 
-  -- Add Mason packages for C/C++
-  -- OPTIMIZED: Conditional installation to save space
+  -- Add Mason packages for C/C++ (STANDARD: Always install Clangd)
   {
     "williamboman/mason.nvim",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
-
-      -- Check for System Clangd (Save ~150MB)
-      local has_system_clangd = vim.fn.executable("/usr/bin/clangd") == 1 or vim.fn.executable("clangd") == 1
-
-      if not has_system_clangd then
-        -- Install clangd if missing
-        if not vim.tbl_contains(opts.ensure_installed, "clangd") then
-          table.insert(opts.ensure_installed, "clangd")
-        end
-      else
-        -- Remove if system tool exists (School PC)
-        for i, tool in ipairs(opts.ensure_installed) do
-          if tool == "clangd" then
-            table.remove(opts.ensure_installed, i)
-            break
-          end
-        end
-      end
-
-      -- Note: `codelldb` logic is handled in `dap_cpp.lua` or can be added here if needed.
+      vim.list_extend(opts.ensure_installed, {
+        "clangd",
+        -- "codelldb" is handled in dap_cpp.lua
+      })
     end,
   },
 
@@ -59,7 +42,6 @@ return {
             "--completion-style=detailed",
             "--function-arg-placeholders",
             "--fallback-style=llvm",
-            "--query-driver=/usr/bin/g++,/usr/bin/gcc,/usr/bin/c++", -- 42 SCHOOL FIX: Explicitly use g++/gcc headers
           },
           init_options = {
             usePlaceholders = true,
@@ -77,6 +59,7 @@ return {
       },
     },
   },
+
 
   -- Setup nvim-cmp for C++
   {
@@ -99,20 +82,7 @@ return {
     },
     opts = function()
       local dap = require("dap")
-      if not dap.adapters["codelldb"] then
-        require("dap").adapters["codelldb"] = {
-          type = "server",
-          host = "localhost",
-          port = "${port}",
-          executable = {
-            command = "codelldb",
-            args = {
-              "--port",
-              "${port}",
-            },
-          },
-        }
-      end
+      -- We don't need to configure adapters here as dap_cpp.lua does it better
       for _, lang in ipairs({ "c", "cpp" }) do
         dap.configurations[lang] = {
           {

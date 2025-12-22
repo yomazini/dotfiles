@@ -5,7 +5,8 @@ return {
       vim.api.nvim_create_autocmd("VimEnter", {
         callback = function()
           -- Set Wallpaper + Dark Tint + Opaque Background
-          vim.fn.system("kitty @ set-background-image /home/thejoceph/Pictures/Camera/wallpaper3.png")
+          local home = os.getenv("HOME")
+          vim.fn.system("kitty @ set-background-image " .. home .. "/Pictures/Camera/wallpaper3.png")
           vim.fn.system("kitty @ set-background-tint 0.90")
           vim.fn.system("kitty @ set-background-opacity 1.0")
         end,
