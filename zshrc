@@ -43,6 +43,37 @@ alias fkill="ps -ef | fzf | awk '{print \$2}' | xargs kill -9"
 alias r="ranger"
 alias ocr="~/.local/bin/gnome-ocr-area.sh"
 
+
+#-----------------STARTTTTT
+
+alias ci='zi'
+
+
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^X^E' edit-command-line
+
+# ls in each time call cd 
+#
+autoload -Uz add-zsh-hook
+
+function list_on_cd() { ls }
+add-zsh-hook chpwd list_on_cd
+
+# ctl + X +c copy command buffer into system clipboard
+#
+ function copy-buffer() {
+  echo -n "$BUFFER" | wl-copy # Use wl-copy for Linux/Wayland else pbcopy
+  zle -M "Buffer copied"
+}
+zle -N copy-buffer
+bindkey '^Xc' copy-buffer
+
+
+#--------------------------------- ENDDDDD 
+
+
+
 alias v="vim"
 alias md='glow -p'
 
