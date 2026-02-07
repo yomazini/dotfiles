@@ -46,6 +46,9 @@ alias ocr="~/.local/bin/gnome-ocr-area.sh"
 
 #-----------------STARTTTTT
 
+
+#-----------------STARTTTTT
+
 alias ci='zi'
 
 
@@ -68,6 +71,333 @@ add-zsh-hook chpwd list_on_cd
 }
 zle -N copy-buffer
 bindkey '^Xc' copy-buffer
+
+alias dps='docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}"'
+# Fuzzy Search through containers to stop on# Stop containers with Fuzzy Search
+#
+#
+
+# Exec into container - Compatible with older fzf
+dex() {
+  local cid
+  # tail -n +2 removes the header line
+  cid=$(docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}" | tail -n +2 | fzf | awk '{print $1}')
+  
+  if [ -n "$cid" ]; then
+    # Attempts bash, falls back to sh if bash isn't installed in the image
+    docker exec -it "$cid" /bin/bash 2>/dev/null || docker exec -it "$cid" /bin/sh
+  fi
+}
+
+# Stop containers - Logic for ancient fzf versions
+ds-stop() {
+  local cid
+  # Use tail to skip the first line (header) manually
+  cid=$(docker ps --format "table {{.ID}}\t{{.Names}}\t{{.Status}}" | tail -n +2 | fzf | awk '{print $1}')
+  [ -n "$cid" ] && docker stop $cid
+}
+
+# Remove images - Logic for ancient fzf versions
+di-rm() {
+  local img
+  img=$(docker images --format "table {{.ID}}\t{{.Repository}}\t{{.Tag}}" | tail -n +2 | fzf | awk '{print $1}')
+  [ -n "$img" ] && docker rmi $img
+}
+
+alias lzd='lazydocker'
+
+#
+
+#!/bin/zsh
+# ═══════════════════════════════════════════════════════════════════════════
+# 🚀 SMART PUSH FUNCTIONS - The Perfect File Transfer Automation
+# ═══════════════════════════════════════════════════════════════════════════
+# Add this to your ~/.zshrc or source it: source ~/smart_push_functions.zsh
+#
+# Usage:
+#   push <file> <server> [remote_path] [key]
+#   pushlive <server> [file]
+#
+# Examples:
+#   push deployment.yaml thejoceph-k8s.duckdns.org
+#   push nginx.conf 54.123.45.67 /etc/nginx/
+#   pushlive thejoceph-k8s.duckdns.org deployment.yaml
+# ═══════════════════════════════════════════════════════════════════════════
+
+# ─────────────────────────────────────────────────────────────────────────
+# Function 1: push - The Intelligent File Uploader
+# ─────────────────────────────────────────────────────────────────────────
+push() {
+  local FILE=$1
+  local SERVER=$2
+  local REMOTE_PATH=${3:-"~/mylaptop"}  # Default to ~/mylaptop folder
+  local SSH_KEY=$4
+  local REMOTE_USER=""
+  local RESOLVED_IP=""
+  
+  # ─── Validation ───
+  if [[ -z "$FILE" || -z "$SERVER" ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Usage: push <file> <server> [remote_path] [key]"
+    echo ""
+    echo "Examples:"
+    echo "  push deploy.yaml thejoceph-k8s.duckdns.org"
+    echo "  push script.sh 192.168.1.10 /opt/scripts/"
+    echo "  push config.conf myserver ~/configs/ custom.pem"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    return 1
+  fi
+
+  if [[ ! -f "$FILE" ]]; then
+    echo "❌ Error: File '$FILE' not found"
+    return 1
+  fi
+
+  # ─── Auto-detect SSH Key ───
+  if [[ -z "$SSH_KEY" ]]; then
+    # Try default first
+    if [[ -f ~/Downloads/k8s_course.pem ]]; then
+      SSH_KEY=~/Downloads/k8s_course.pem
+      echo "🔑 Using default key: k8s_course.pem"
+    elif [[ -f ~/.ssh/k8s_course.pem ]]; then
+      SSH_KEY=~/.ssh/k8s_course.pem
+      echo "🔑 Using key from ~/.ssh/k8s_course.pem"
+    else
+      # Show selection menu
+      echo "🔍 No default key found. Available keys in ~/.ssh/:"
+      local keys=(~/.ssh/*.pem(N) ~/.ssh/id_*(N))
+      
+      if [[ ${#keys[@]} -eq 0 ]]; then
+        echo "❌ No SSH keys found in ~/.ssh/"
+        echo "💡 Trying without key (password auth)..."
+        SSH_KEY=""
+      else
+        local i=1
+        for key in "${keys[@]}"; do
+          echo "  [$i] $(basename $key)"
+          ((i++))
+        done
+        echo -n "Select key number (or press Enter to try without key): "
+        read selection
+        
+        if [[ -n "$selection" && "$selection" =~ ^[0-9]+$ ]]; then
+          SSH_KEY="${keys[$selection]}"
+          echo "🔑 Selected: $(basename $SSH_KEY)"
+        else
+          SSH_KEY=""
+          echo "⚠️  Proceeding without SSH key"
+        fi
+      fi
+    fi
+  else
+    # Expand tilde if present
+    SSH_KEY="${SSH_KEY/#\~/$HOME}"
+    if [[ ! -f "$SSH_KEY" ]]; then
+      echo "❌ Error: Key file '$SSH_KEY' not found"
+      return 1
+    fi
+  fi
+
+  # ─── Auto-detect Remote User ───
+  # Check if server contains user@ prefix
+  # ─── Auto-detect Remote User ───
+# Check if server contains user@ prefix
+if [[ "$SERVER" =~ ^(.+)@(.+)$ ]]; then
+  REMOTE_USER="${match[1]}"
+  SERVER="${match[2]}"
+  echo "👤 Using specified user: $REMOTE_USER"
+else
+  # Auto-detect based on server characteristics
+  if [[ "$SERVER" =~ (amazon|aws|ec2|duckdns) ]]; then
+    REMOTE_USER="ubuntu"
+    echo "👤 Auto-detected AWS/Ubuntu server → user: ubuntu"
+  elif [[ "$SERVER" =~ (al2023|amazonlinux) ]]; then
+    REMOTE_USER="ec2-user"
+    echo "👤 Auto-detected Amazon Linux → user: ec2-user"
+  else
+    # Default to ubuntu for unknown servers
+    REMOTE_USER="ubuntu"
+    echo "👤 Using default user: ubuntu"
+  fi
+fi  
+
+
+# ─── DNS Resolution & Connectivity Check ───
+# ─── DNS Resolution & Connectivity Check ───
+echo "🌐 Resolving server address: $SERVER"
+
+# Check if it's already an IP
+if [[ "$SERVER" =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+  RESOLVED_IP="$SERVER"
+  echo "✓ Direct IP detected: $RESOLVED_IP"
+else
+  # Try to resolve DNS (compatible with rg alias)
+  RESOLVED_IP=$(dig +short "$SERVER" | command grep -E '^[0-9.]+$' | head -n1)
+  
+  if [[ -z "$RESOLVED_IP" ]]; then
+    # Fallback to host command
+    RESOLVED_IP=$(host "$SERVER" 2>/dev/null | command grep "has address" | awk '{print $4}' | head -n1)
+  fi
+  
+  if [[ -n "$RESOLVED_IP" ]]; then
+    echo "✓ Resolved $SERVER → $RESOLVED_IP"
+  else
+    echo "⚠️  Could not resolve DNS. Trying direct connection..."
+    RESOLVED_IP="$SERVER"
+  fi
+fi
+
+# Quick connectivity check (with timeout)
+echo "📡 Testing connectivity..."
+if nc -z -w 3 "$RESOLVED_IP" 22 2>/dev/null; then
+  echo "✓ SSH port (22) is reachable"
+else
+  echo "⚠️  Warning: Cannot reach SSH port. Server might be down or firewalled."
+  echo -n "Continue anyway? [y/N]: "
+  read confirm
+  if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+    echo "❌ Upload cancelled"
+    return 1
+  fi
+fi
+
+
+# ─── Build SCP Command ───
+local SCP_CMD="scp"
+if [[ -n "$SSH_KEY" ]]; then
+  SCP_CMD="$SCP_CMD -i \"$SSH_KEY\""
+fi
+
+# Add options for better UX
+SCP_CMD="$SCP_CMD -o ConnectTimeout=10 -o StrictHostKeyChecking=no"
+
+# Ensure remote path ends with / to indicate it's a directory
+local FINAL_REMOTE_PATH="$REMOTE_PATH"
+if [[ ! "$FINAL_REMOTE_PATH" =~ /$ ]]; then
+  FINAL_REMOTE_PATH="${FINAL_REMOTE_PATH}/"
+fi
+
+local DESTINATION="${REMOTE_USER}@${SERVER}:${FINAL_REMOTE_PATH}"
+
+# ─── Execute Transfer ───
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "🚀 Uploading: $FILE"
+echo "📍 To: ${DESTINATION}$(basename $FILE)"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+eval "$SCP_CMD \"$FILE\" \"$DESTINATION\""
+
+if [ $? -eq 0 ]; then
+  echo ""
+  echo "✅ SUCCESS: File uploaded to ${REMOTE_USER}@${SERVER}:${FINAL_REMOTE_PATH}$(basename $FILE)"
+  echo "💡 To apply: ssh ${REMOTE_USER}@${SERVER} \"kubectl apply -f ${FINAL_REMOTE_PATH}$(basename $FILE)\""
+else
+  echo ""
+  echo "❌ FAILED: Upload error"
+  echo "🔧 Troubleshooting:"
+  echo "   • Verify server is running"
+  echo "   • Check SSH key permissions: chmod 400 $SSH_KEY"
+  echo "   • Test manual connection: ssh ${REMOTE_USER}@${SERVER}"
+  return 1
+fi
+
+}
+
+# ─────────────────────────────────────────────────────────────────────────
+# Function 2: pushlive - Live Neovim Editing Over SCP
+# ─────────────────────────────────────────────────────────────────────────
+pushlive() {
+  local SERVER=$1
+  local FILE=${2:-""}
+  local REMOTE_USER="ubuntu"
+  local SSH_KEY=""
+  
+  if [[ -z "$SERVER" ]]; then
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "Usage: pushlive <server> [file]"
+    echo ""
+    echo "Examples:"
+    echo "  pushlive thejoceph-k8s.duckdns.org deployment.yaml"
+    echo "  pushlive 192.168.1.10"
+    echo ""
+    echo "Opens Neovim in live-sync mode. Every :w saves directly to remote."
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    return 1
+  fi
+
+  # ─── Auto-detect SSH Key ───
+  if [[ -f ~/Downloads/k8s_course.pem ]]; then
+    SSH_KEY=~/Downloads/k8s_course.pem
+  elif [[ -f ~/.ssh/k8s_course.pem ]]; then
+    SSH_KEY=~/.ssh/k8s_course.pem
+  fi
+
+  # ─── Build Neovim SCP URL ───
+  local SCP_URL="scp://${REMOTE_USER}@${SERVER}//home/${REMOTE_USER}/mylaptop/"
+  
+  if [[ -n "$FILE" ]]; then
+    SCP_URL="${SCP_URL}${FILE}"
+  fi
+
+  echo "🔗 Opening live session to: $SERVER"
+  echo "📂 Remote path: /home/${REMOTE_USER}/mylaptop/"
+  echo "💡 Press :w in Neovim to save directly to server"
+  echo ""
+
+  # ─── Set SSH identity for Neovim ───
+  if [[ -n "$SSH_KEY" ]]; then
+    export NVIM_SCP_KEY="$SSH_KEY"
+    # Neovim will use this via .ssh/config or we can pass via env
+  fi
+
+  # ─── Launch Neovim ───
+  if command -v nvim &> /dev/null; then
+    nvim "$SCP_URL"
+  else
+    echo "❌ Neovim not found. Install with: sudo apt install neovim"
+    return 1
+  fi
+}
+
+# ─────────────────────────────────────────────────────────────────────────
+# Bonus: Quick SSH Connection Helper
+# ─────────────────────────────────────────────────────────────────────────
+kssh() {
+  local SERVER=$1
+  local SSH_KEY=~/Downloads/k8s_course.pem
+  
+  if [[ -z "$SERVER" ]]; then
+    echo "Usage: kssh <server>"
+    return 1
+  fi
+  
+  if [[ ! -f "$SSH_KEY" ]]; then
+    SSH_KEY=~/.ssh/k8s_course.pem
+  fi
+  
+  echo "🔐 Connecting to $SERVER..."
+  ssh -i "$SSH_KEY" ubuntu@"$SERVER"
+}
+
+# ─────────────────────────────────────────────────────────────────────────
+# Auto-completion Setup (Optional but Professional)
+# ─────────────────────────────────────────────────────────────────────────
+# Uncomment to enable tab-completion for server names
+# compdef '_files' push
+# compdef '_hosts' pushlive
+#
+# echo "✅ Smart Push Functions Loaded"
+# echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+# echo "Available commands:"
+# echo "  push      - Upload files intelligently"
+# echo "  pushlive  - Live Neovim editing"
+# echo "  kssh      - Quick SSH connection"
+# echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+#
+
+alias mydns='echo thejoceph-k8s.duckdns.org'
+
 
 
 #--------------------------------- ENDDDDD 
