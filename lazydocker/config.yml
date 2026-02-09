@@ -1,0 +1,348 @@
+# yaml-language-server: $schema=https://json.schemastore.org/lazydocker.json
+# 🚀 Ultimate LazyDocker Configuration (Fixed Stats)
+# Path: ~/.config/jesseduffield/lazydocker/config.yml
+# Updated: January 2026 - Working Version
+
+# ============================================================================
+# GUI CONFIGURATION
+# ============================================================================
+gui:
+  # NerdFonts V3 for modern container icons
+  nerdFontsVersion: "3"
+
+  # Show visual graphs for CPU/Memory
+  showGraphs: true
+
+  # Rounded borders for cleaner aesthetics
+  border: rounded
+
+  # Mouse support (hold Option/Alt to select text)
+  ignoreMouseEvents: false
+
+  # Wrap text in main panel
+  wrapMainPanel: false
+
+  # Show all containers by default (running + stopped)
+  showAllContainers: false
+
+  # Container status display style: "long", "short", or "icon"
+  containerStatusHealthStyle: "long"
+
+  # TokyoNight / Cyberpunk Theme
+  theme:
+    activeBorderColor:
+      - "#7aa2f7" # TokyoNight Blue (Bright)
+      - bold
+    inactiveBorderColor:
+      - "#565f89" # Muted Blue/Grey
+    optionsTextColor:
+      - "#7dcfff" # Cyan
+    selectedLineBgColor:
+      - "#2e3c64" # Deep Blue Background
+    selectedRangeBgColor:
+      - "#2e3c64"
+
+# ============================================================================
+# LOGS CONFIGURATION
+# ============================================================================
+logs:
+  # Show timestamps in logs
+  timestamps: true
+
+  # Show logs from last 60 minutes (increase if needed: '120m', '24h', '' for all)
+  since: "60m"
+
+  # Limit to last N lines ('' for unlimited, '200' for last 200 lines)
+  tail: "500"
+
+# ============================================================================
+# STATS & GRAPHS CONFIGURATION (FIXED)
+# ============================================================================
+stats:
+  # How long to gather stats (5 minutes)
+  maxDuration: 5m
+
+  # Custom graphs for monitoring
+  # IMPORTANT: Only using stats that actually exist in Docker's API
+  graphs:
+    # CPU Usage (This works)
+    - caption: "CPU (%)"
+      statPath: DerivedStats.CPUPercentage
+      color: cyan
+
+    # Memory Usage (This works)
+    - caption: "Memory (%)"
+      statPath: DerivedStats.MemoryPercentage
+      color: green
+
+# NOTE: Network and Disk I/O stats are commented out because they don't exist
+# in the standard Docker stats API for your setup. You can view them in the
+# Stats tab by selecting a container and pressing ']' to see raw stats.
+
+# ============================================================================
+# COMMAND TEMPLATES
+# ============================================================================
+commandTemplates:
+  # Docker Compose command (use 'docker compose' for v2)
+  dockerCompose: docker compose
+
+  # Service commands
+  restartService: "{{ .DockerCompose }} restart {{ .Service.Name }}"
+  up: "{{ .DockerCompose }} up -d"
+  down: "{{ .DockerCompose }} down"
+  downWithVolumes: "{{ .DockerCompose }} down --volumes"
+  upService: "{{ .DockerCompose }} up -d {{ .Service.Name }}"
+  startService: "{{ .DockerCompose }} start {{ .Service.Name }}"
+  stopService: "{{ .DockerCompose }} stop {{ .Service.Name }}"
+  serviceLogs: "{{ .DockerCompose }} logs --since=60m --follow {{ .Service.Name }}"
+  viewServiceLogs: "{{ .DockerCompose }} logs --follow {{ .Service.Name }}"
+  rebuildService: "{{ .DockerCompose }} up -d --build {{ .Service.Name }}"
+  recreateService: "{{ .DockerCompose }} up -d --force-recreate {{ .Service.Name }}"
+
+  # Container commands
+  restartContainer: "docker restart {{ .Container.ID }}"
+  stopContainer: "docker stop {{ .Container.ID }}"
+  removeContainer: "docker rm -f {{ .Container.ID }}"
+
+  # View logs
+  allLogs: "docker logs --timestamps --follow {{ .Container.ID }}"
+
+# ============================================================================
+# CUSTOM COMMANDS (Press 'c' to access)
+# ============================================================================
+customCommands:
+  # --- CONTAINER COMMANDS ---
+  containers:
+    # Quick Bash Access
+    - name: bash
+      attach: true
+      command: "docker exec -it {{ .Container.ID }} /bin/bash"
+      serviceNames: []
+
+    # Fallback to sh (for Alpine containers)
+    - name: sh
+      attach: true
+      command: "docker exec -it {{ .Container.ID }} /bin/sh"
+      serviceNames: []
+
+    # Root shell access
+    - name: bash (root)
+      attach: true
+      command: "docker exec -u root -it {{ .Container.ID }} /bin/bash"
+      serviceNames: []
+
+    # View logs with timestamps
+    - name: logs (detailed)
+      attach: true
+      command: "docker logs --timestamps --tail=500 --follow {{ .Container.ID }}"
+      serviceNames: []
+
+    # Container stats (live) - Better for network/disk monitoring
+    - name: stats (live)
+      attach: true
+      command: "docker stats {{ .Container.ID }}"
+      serviceNames: []
+
+    # Inspect container (full JSON)
+    - name: inspect
+      attach: false
+      command: "docker inspect {{ .Container.ID }} | less"
+      serviceNames: []
+
+    # View container processes
+    - name: top
+      attach: false
+      command: "docker top {{ .Container.ID }}"
+      serviceNames: []
+
+    # Network stats (alternative way)
+    - name: network stats
+      attach: false
+      command: "docker exec {{ .Container.ID }} cat /proc/net/dev"
+      serviceNames: []
+
+    # Disk usage inside container
+    - name: disk usage
+      attach: false
+      command: "docker exec {{ .Container.ID }} df -h"
+      serviceNames: []
+
+    # Export container filesystem
+    - name: export filesystem
+      attach: false
+      command: "docker export {{ .Container.ID }} > /tmp/{{ .Container.Name }}.tar"
+      serviceNames: []
+
+  # --- IMAGE COMMANDS ---
+  images:
+    # Deep inspection
+    # - name: inspect
+    #   attach: true
+    #   command: "docker image inspect {{ .Image.ID }} tail"
+    #
+    # Run image interactively
+    - name: run (interactive)
+      attach: true
+      command: "docker run -it --rm {{ .Image.ID }} /bin/sh"
+
+    # Run with bash
+    - name: run (bash)
+      attach: true
+      command: "docker run -it --rm {{ .Image.ID }} /bin/bash"
+
+    # View image history
+    - name: history
+      attach: false
+      command: "docker history {{ .Image.ID }}"
+
+    # Save image to tar
+    - name: save to tar
+      attach: false
+      command: "docker save {{ .Image.ID }} > /tmp/{{ .Image.Name }}.tar"
+
+    # Scan with trivy (if installed)
+    - name: security scan
+      attach: true
+      command: "trivy image {{ .Image.ID }}"
+
+  # --- VOLUME COMMANDS ---
+  volumes:
+    # Explore volume contents
+    - name: explore
+      attach: true
+      command: "docker run --rm -it -v {{ .Volume.Name }}:/data busybox ls -la /data"
+
+    # Browse volume with sh
+    - name: browse (sh)
+      attach: true
+      command: 'docker run --rm -it -v {{ .Volume.Name }}:/data busybox sh -c "cd /data && sh"'
+
+    # Inspect volume
+    - name: inspect
+      attach: false
+      command: "docker volume inspect {{ .Volume.Name }}"
+
+    # Backup volume to tar
+    - name: backup
+      attach: false
+      command: "docker run --rm -v {{ .Volume.Name }}:/data -v /tmp:/backup busybox tar czf /backup/{{ .Volume.Name }}_backup.tar.gz -C /data ."
+
+    # Find volume location
+    - name: location
+      attach: false
+      command: "docker volume inspect {{ .Volume.Name }} | grep Mountpoint"
+
+    # Check volume size
+    - name: size
+      attach: false
+      command: "docker run --rm -v {{ .Volume.Name }}:/data busybox du -sh /data"
+
+  # --- SERVICE COMMANDS (Docker Compose) ---
+  services:
+    # View service configuration
+    - name: config
+      attach: false
+      command: "{{ .DockerCompose }} config --services"
+
+    # Scale service
+    - name: scale
+      attach: false
+      command: "{{ .DockerCompose }} up -d --scale {{ .Service.Name }}=3"
+
+    # Pull latest images
+    - name: pull
+      attach: true
+      command: "{{ .DockerCompose }} pull {{ .Service.Name }}"
+
+    # Restart with rebuild
+    - name: rebuild
+      attach: true
+      command: "{{ .DockerCompose }} up -d --build --force-recreate {{ .Service.Name }}"
+
+    # View service logs
+    - name: logs
+      attach: true
+      command: "{{ .DockerCompose }} logs -f --tail=100 {{ .Service.Name }}"
+
+# ============================================================================
+# BULK COMMANDS (Apply to all items in panel)
+# ============================================================================
+bulkCommands:
+  services:
+    # Restart all services
+    - name: restart all
+      command: "{{ .DockerCompose }} restart"
+      attach: false
+
+    # Pull all images
+    - name: pull all
+      command: "{{ .DockerCompose }} pull"
+      attach: true
+
+    # Rebuild all
+    - name: rebuild all
+      command: "{{ .DockerCompose }} up -d --build"
+      attach: true
+
+    # Stop all
+    - name: stop all
+      command: "{{ .DockerCompose }} stop"
+      attach: false
+
+  containers:
+    # Stop all containers
+    - name: stop all
+      command: "docker stop $(docker ps -q)"
+      attach: false
+
+    # Remove all stopped containers
+    - name: prune stopped
+      command: "docker container prune -f"
+      attach: false
+
+    # View all stats
+    - name: stats all
+      command: 'docker stats $(docker ps --format "{{.Names}}")'
+      attach: true
+
+  images:
+    # Remove dangling images
+    - name: prune dangling
+      command: "docker image prune -f"
+      attach: false
+
+    # Remove all unused images
+    - name: prune all unused
+      command: "docker image prune -a -f"
+      attach: false
+
+  volumes:
+    # Remove unused volumes
+    - name: prune unused
+      command: "docker volume prune -f"
+      attach: false
+
+# ============================================================================
+# UPDATE SETTINGS
+# ============================================================================
+update:
+  # Let system package manager handle updates
+  method: never
+
+# ============================================================================
+# CONFIRMATION PROMPTS
+# ============================================================================
+confirmOnQuit: false
+
+# ============================================================================
+# OS-SPECIFIC SETTINGS
+# ============================================================================
+oS:
+  # Default editor (change to 'vim', 'nano', or your preference)
+  editPreset: "nvim"
+
+  # Open command (for URLs/files)
+  open: "xdg-open"
+
+  # Open in editor
+  openInEditor: "nvim"

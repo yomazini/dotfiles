@@ -1,0 +1,160 @@
+# K9s Plugins
+# Location: ~/.config/k9s/plugins.yaml
+# Extended functionality
+
+plugins:
+  # ==========================================
+  # DIVE - Image Analysis (Integration!)
+  # ==========================================
+  dive:
+    shortCut: Ctrl-D
+    description: Analyze image with dive
+    scopes:
+      - containers
+    command: sh
+    background: false
+    args:
+      - -c
+      - "dive $COL-IMAGE"
+
+  # ==========================================
+  # STERN - Better Logs
+  # ==========================================
+  stern:
+    shortCut: Ctrl-L
+    description: Tail logs with stern
+    scopes:
+      - pods
+    command: sh
+    background: false
+    args:
+      - -c
+      - "stern --tail 100 $NAME -n $NAMESPACE"
+
+  # ==========================================
+  # DEBUG POD
+  # ==========================================
+  debug:
+    shortCut: Shift-D
+    description: Debug pod
+    scopes:
+      - pods
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl debug -it $NAME -n $NAMESPACE --image=busybox:1.35.0 --target=$NAME"
+
+  # ==========================================
+  # EDIT YAML
+  # ==========================================
+  edit-yaml:
+    shortCut: Ctrl-E
+    description: Edit resource YAML
+    scopes:
+      - all
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl edit $RESOURCE $NAME -n $NAMESPACE"
+
+  # ==========================================
+  # GET YAML
+  # ==========================================
+  get-yaml:
+    shortCut: Ctrl-Y
+    description: Get resource YAML
+    scopes:
+      - all
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl get $RESOURCE $NAME -n $NAMESPACE -o yaml | less"
+
+  # ==========================================
+  # DESCRIBE
+  # ==========================================
+  describe-resource:
+    shortCut: Shift-I
+    description: Describe resource
+    scopes:
+      - all
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl describe $RESOURCE $NAME -n $NAMESPACE | less"
+
+  # ==========================================
+  # POD LOGS (Last 1000 lines)
+  # ==========================================
+  logs-1000:
+    shortCut: Ctrl-T
+    description: Last 1000 log lines
+    scopes:
+      - pods
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl logs --tail=1000 $NAME -n $NAMESPACE | less"
+
+  # ==========================================
+  # EXEC SH (Alternative shell)
+  # ==========================================
+  # exec-sh:
+  #   shortCut: Ctrl-S
+  #   description: Shell (sh)
+  #   scopes:
+  #     - pods
+  #   command: sh
+  #   background: false
+  #   args:
+  #     - -c
+  #     - "kubectl exec -it $NAME -n $NAMESPACE -- sh"
+  #
+  # ==========================================
+  # COPY POD NAME
+  # ==========================================
+  copy-name:
+    shortCut: Ctrl-N
+    description: Copy pod name
+    scopes:
+      - pods
+    command: sh
+    background: false
+    args:
+      - -c
+      - "echo $NAME | xclip -selection clipboard && echo 'Copied: $NAME'"
+
+  # ==========================================
+  # TOP POD (Resource usage)
+  # ==========================================
+  top-pod:
+    shortCut: Ctrl-P
+    description: Pod resource usage
+    scopes:
+      - pods
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl top pod $NAME -n $NAMESPACE"
+
+  # ==========================================
+  # EVENTS
+  # ==========================================
+  events:
+    shortCut: Ctrl-V
+    description: Show events
+    scopes:
+      - pods
+      - deployments
+      - services
+    command: sh
+    background: false
+    args:
+      - -c
+      - "kubectl get events -n $NAMESPACE --field-selector involvedObject.name=$NAME | less"

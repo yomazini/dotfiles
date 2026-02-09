@@ -1,0 +1,57 @@
+# K9s Hotkeys
+# Location: ~/.config/k9s/hotkeys.yaml
+# Custom keyboard shortcuts
+
+hotKeys:
+  # ==========================================
+  # QUICK NAVIGATION (Shift + Number)
+  # ==========================================
+  shift-0:
+    shortCut: Shift-0
+    description: Pods
+    command: pods
+
+  shift-1:
+    shortCut: Shift-1
+    description: Deployments
+    command: deployments
+
+  shift-2:
+    shortCut: Shift-2
+    description: Services
+    command: services
+
+  shift-3:
+    shortCut: Shift-3
+    description: Namespaces
+    command: namespaces
+
+  shift-4:
+    shortCut: Shift-4
+    description: Nodes
+    command: nodes
+
+  shift-5:
+    shortCut: Shift-5
+    description: PVCs
+    command: persistentvolumeclaims
+
+  # ==========================================
+  # XRAY VIEWS (Quick debugging)
+  # ==========================================
+  shift-x:
+    shortCut: Shift-X
+    description: Xray Deployments
+    command: xray deployments
+
+  # ==========================================
+  # CONTEXT NAVIGATION
+  # ==========================================
+  shift-c:
+    shortCut: Shift-C
+    description: Contexts
+    command: contexts
+
+  # ==========================================
+  # RESOURCE IN CURRENT NAMESPACE
+  # ==========================================

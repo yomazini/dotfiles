@@ -1,0 +1,56 @@
+# K9s Aliases
+# Location: ~/.config/k9s/aliases.yaml
+# Quick shortcuts for resources
+
+aliases:
+  # ==========================================
+  # COMMON RESOURCES (Short names)
+  # ==========================================
+  po: v1/pods
+  dep: apps/v1/deployments
+  svc: v1/services
+  ns: v1/namespaces
+  no: v1/nodes
+  cm: v1/configmaps
+  sec: v1/secrets
+  ing: networking.k8s.io/v1/ingresses
+  pv: v1/persistentvolumes
+  pvc: v1/persistentvolumeclaims
+  sa: v1/serviceaccounts
+  
+  # ==========================================
+  # WORKLOAD RESOURCES
+  # ==========================================
+  sts: apps/v1/statefulsets
+  ds: apps/v1/daemonsets
+  rs: apps/v1/replicasets
+  job: batch/v1/jobs
+  cj: batch/v1/cronjobs
+  
+  # ==========================================
+  # RBAC
+  # ==========================================
+  cr: rbac.authorization.k8s.io/v1/clusterroles
+  crb: rbac.authorization.k8s.io/v1/clusterrolebindings
+  ro: rbac.authorization.k8s.io/v1/roles
+  rb: rbac.authorization.k8s.io/v1/rolebindings
+  
+  # ==========================================
+  # NETWORK
+  # ==========================================
+  ep: v1/endpoints
+  np: networking.k8s.io/v1/networkpolicies
+  
+  # ==========================================
+  # STORAGE
+  # ==========================================
+  sc: storage.k8s.io/v1/storageclasses
+  
+  # ==========================================
+  # CUSTOM (Examples)
+  # ==========================================
+  # System pods in kube-system
+  sys: pods kube-system
+  
+  # All pods with label app=nginx
+  # nginx-pods: pods -l app=nginx

@@ -1,0 +1,84 @@
+# TokyoNight Skin for k9s
+# Location: ~/.config/k9s/skins/tokyonight.yaml
+
+k9s:
+  body:
+    fgColor: "#c0caf5"
+    bgColor: "#1a1b26"
+    logoColor: "#7aa2f7"
+  
+  info:
+    fgColor: "#7dcfff"
+    sectionColor: "#7aa2f7"
+  
+  dialog:
+    fgColor: "#c0caf5"
+    bgColor: "#1a1b26"
+    buttonFgColor: "#1a1b26"
+    buttonBgColor: "#7aa2f7"
+    buttonFocusFgColor: "#1a1b26"
+    buttonFocusBgColor: "#7dcfff"
+    labelFgColor: "#ff9e64"
+    fieldFgColor: "#c0caf5"
+  
+  frame:
+    border:
+      fgColor: "#565f89"
+      focusColor: "#7aa2f7"
+    menu:
+      fgColor: "#c0caf5"
+      keyColor: "#7dcfff"
+      numKeyColor: "#ff9e64"
+    crumbs:
+      fgColor: "#c0caf5"
+      bgColor: "#1a1b26"
+      activeColor: "#7aa2f7"
+    status:
+      newColor: "#9ece6a"
+      modifyColor: "#7aa2f7"
+      addColor: "#9ece6a"
+      errorColor: "#f7768e"
+      highlightColor: "#7dcfff"
+      killColor: "#e0af68"
+      completedColor: "#565f89"
+    title:
+      fgColor: "#c0caf5"
+      bgColor: "#1a1b26"
+      highlightColor: "#7aa2f7"
+      counterColor: "#7dcfff"
+      filterColor: "#ff9e64"
+  
+  views:
+    charts:
+      bgColor: "#1a1b26"
+      dialBgColor: "#1a1b26"
+      defaultDialColors:
+        - "#7aa2f7"
+        - "#f7768e"
+        - "#9ece6a"
+    table:
+      fgColor: "#c0caf5"
+      bgColor: "#1a1b26"
+      cursorFgColor: "#1a1b26"
+      cursorBgColor: "#7aa2f7"
+      header:
+        fgColor: "#7dcfff"
+        bgColor: "#1a1b26"
+        sorterColor: "#7aa2f7"
+    xray:
+      fgColor: "#c0caf5"
+      bgColor: "#1a1b26"
+      cursorColor: "#7aa2f7"
+      graphicColor: "#7aa2f7"
+    yaml:
+      keyColor: "#7dcfff"
+      colonColor: "#565f89"
+      valueColor: "#c0caf5"
+    logs:
+      fgColor: "#c0caf5"
+      bgColor: "#1a1b26"
+      indicator:
+        fgColor: "#7dcfff"
+        bgColor: "#1a1b26"
+        toggleOnColor: "#9ece6a"
+        toggleOffColor: "#565f89"

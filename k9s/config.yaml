@@ -1,0 +1,46 @@
+# K9s Main Configuration
+# Location: ~/.config/k9s/config.yaml
+# Updated: January 2026
+
+k9s:
+  refreshRate: 2
+  liveViewAutoRefresh: false
+  maxConnRetry: 5
+  skipLatestRevCheck: true
+  disablePodCounting: false
+  readOnly: false
+  noExitOnCtrlC: false
+  portForwardAddress: localhost
+
+  ui:
+    # enableMouse: false
+    # headless: false
+    # logoless: false
+    # crumbsless: false
+    # splashless: false
+    # noIcons: false
+    # reactive: true
+    # defaultsToFullScreen: false
+    skin: tokyonight
+
+  shellPod:
+    image: busybox:1.35.0
+    namespace: default
+    limits:
+      cpu: 100m
+      memory: 100Mi
+
+  logger:
+    tail: 1000
+    buffer: 5000
+    sinceSeconds: -1
+    textWrap: false
+    showTime: true
+
+  thresholds:
+    cpu:
+      critical: 90
+      warn: 70
+    memory:
+      critical: 90
+      warn: 70

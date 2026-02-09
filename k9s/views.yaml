@@ -1,0 +1,99 @@
+# K9s Views
+# Location: ~/.config/k9s/views.yaml
+# Custom column displays
+
+views:
+  # ==========================================
+  # PODS VIEW (Most important!)
+  # ==========================================
+  v1/pods:
+    columns:
+      - AGE
+      - NAMESPACE
+      - NAME
+      - STATUS
+      - READY
+      - RESTARTS
+      - IP
+      - NODE
+      - CPU # Standard CPU Usage
+      - MEM # Standard Memory Usage
+
+  # DEPLOYMENTS VIEW
+  # ==========================================
+  apps/v1/deployments:
+    columns:
+      - AGE
+      - NAMESPACE
+      - NAME
+      - READY
+      - UP-TO-DATE
+      - AVAILABLE
+
+  # ==========================================
+  # SERVICES VIEW
+  # ==========================================
+  v1/services:
+    columns:
+      - AGE
+      - NAMESPACE
+      - NAME
+      - TYPE
+      - CLUSTER-IP
+      - EXTERNAL-IP
+      - PORT(S)
+
+  # ==========================================
+  # NODES VIEW
+  # ==========================================
+  v1/nodes:
+    columns:
+      - AGE
+      - NAME
+      - STATUS
+      - ROLES
+      - VERSION
+      - CPU # Standard CPU Usage
+      - MEM # Standard Memory Usage
+
+  # ==========================================
+  # NAMESPACES VIEW
+  # ==========================================
+  v1/namespaces:
+    columns:
+      - AGE
+      - NAME
+      - STATUS
+
+  # ==========================================
+  # CONFIGMAPS VIEW
+  # ==========================================
+  v1/configmaps:
+    columns:
+      - AGE
+      - NAMESPACE
+      - NAME
+      - DATA
+
+  # ==========================================
+  # SECRETS VIEW
+  # ==========================================
+  v1/secrets:
+    columns:
+      - AGE
+      - NAMESPACE
+      - NAME
+      - TYPE
+      - DATA
+
+  # ==========================================
+  # INGRESSES VIEW
+  # ==========================================
+  networking.k8s.io/v1/ingresses:
+    columns:
+      - AGE
+      - NAMESPACE
+      - NAME
+      - CLASS
+      - HOSTS
+      - ADDRESS

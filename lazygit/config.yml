@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/jesseduffield/lazygit/master/schema/config.json
+# 🚀 The Ultimate "Conflict-Free" LazyGit Config
+# Path: ~/.config/lazygit/config.yml
+
+# --- Section 1: Core Git Behavior ---
+git:
+  # Visuals: Use 'delta' for side-by-side diffs (Requires git-delta installed)
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never --side-by-side --line-numbers --hyperlinks
+  # Safety: Keep history linear. 'rebase' puts your changes on top.
+  pull:
+    mode: 'rebase'
+  # Intelligence: Explicitly tell LazyGit what the "Trunk" is.
+  mainBranches:
+    - master
+    - main
+    - develop
+    - staging
+  # Graph: Show the commit tree structure
+  log:
+    showGraph: always
+    showWholeGraph: false
+    showAuthor: true
+# --- Section 2: UI & UX ---
+gui:
+  # NerdFonts Version 3 (Implies showIcons: true)
+  nerdFontsVersion: "3"
+  # Navigation: Show the full file tree
+  showFileTree: true
+  # Safety: Prevent closing the app by accident
+  confirmOnQuit: true
+  # Theme: Empty to inherit terminal transparency / colors
+  # theme: ...
+# --- Section 3: Stability & OS Integration ---
+update:
+  method: never # Let Linux package manager handle updates
+os:
+  editPreset: 'nvim' # Explicitly use Neovim for editing
+  # Optional: Custom link open command if needed (but 'gh pr view --web' covers PRs)
+  # openLink: 'bash -C ...'
+# --- Section 4: Custom Commands (DevOps Power Moves) ---
+customCommands:
+  # 🤖 AI INTELLIGENCE
+  - key: '<c-c>'
+    context: 'files'
+    description: 'Generate AI Commit (Gemini)'
+    command: 'bash ~/Desktop/mypersonalnvim/gemini-commit.sh > .git/COMMIT_EDITMSG && nvim .git/COMMIT_EDITMSG && git commit -F .git/COMMIT_EDITMSG'
+    loadingText: 'Gemini is reading your changes...'
+    output: terminal
+  # 🐙 CLOUD INTEGRATION (GitHub CLI)
+  - key: '<c-p>'
+    context: 'localBranches'
+    description: 'Create PR (Auto-fill)'
+    command: 'gh pr create --fill'
+    loadingText: 'Creating PR...'
+  - key: '<c-v>'
+    context: 'localBranches'
+    description: 'View PR in Browser'
+    command: 'gh pr view --web'
+  - key: '<c-a>'
+    context: 'localBranches'
+    description: 'Watch GitHub Actions'
+    command: 'gh run watch'
+    output: terminal
+  # 📋 CAREER AUDIT
+  - key: '<c-l>'
+    context: 'global'
+    description: 'Audit My PRs (All States)'
+    command: 'gh pr list --author "@me" --state all'
+    output: terminal
+  # 🛡️ DEFENSIVE OPS
+  - key: '<c-s>'
+    context: 'localBranches'
+    description: 'Safe Force Push (Lease)'
+    command: 'git push origin {{.SelectedLocalBranch.Name}} --force-with-lease'
+    loadingText: 'Pushing Safely...'
