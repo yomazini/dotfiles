@@ -1,0 +1,101 @@
+# LazySQL Configuration - MSSQL Course
+# Docs: https://github.com/jorgerojas26/lazysql
+
+# Database connections
+connections:
+  mssql-course:
+    driver: "sqlserver"
+    host: "127.0.0.1"
+    port: 1433
+    user: "SA"
+    password: "shit_pass"
+    database: "master"
+
+  docker-local:
+    driver: "mysql"
+    host: "127.0.0.1"
+    port: 3306
+    user: "root"
+    database: "testdb"
+    # Password will be prompted or use environment variable
+
+  docker-readonly:
+    driver: "mysql"
+    host: "127.0.0.1"
+    port: 3306
+    user: "readonly_user"
+    database: "testdb"
+
+# Editor settings (integrates with Lazyvim)
+editor:
+  command: "nvim"
+  # Use your Lazyvim setup
+  args: []
+
+# UI Settings
+ui:
+  # Theme
+  theme: "dracula"
+  # Alternatives: monokai, nord, gruvbox
+
+  # Show line numbers in query editor
+  line_numbers: true
+
+  # Tab width
+  tab_width: 2
+
+  # Wrap long lines
+  word_wrap: true
+
+# Keybindings (Vim-style, compatible with Lazyvim muscle memory)
+keybindings:
+  quit: "q"
+  force_quit: "Q"
+  refresh: "r"
+  switch_panel: "Tab"
+  execute_query: "Ctrl+e"
+  save_query: "Ctrl+s"
+  open_editor: "e"
+  next_tab: "L"
+  prev_tab: "H"
+  copy: "y"
+  paste: "p"
+  search: "/"
+  new_query: "n"
+  delete: "d"
+  help: "?"
+
+# Query settings
+query:
+  # Maximum rows to fetch
+  limit: 1000
+
+  # Timeout in seconds
+  timeout: 30
+
+  # Auto-format SQL queries
+  auto_format: true
+
+  # Save query history
+  save_history: true
+  history_file: "~/.config/lazysql/history.sql"
+
+# Performance
+performance:
+  # Fetch size for large result sets
+  fetch_size: 100
+
+  # Enable query caching
+  cache_enabled: true
+  cache_ttl: 300
+
+# Logging
+logging:
+  enabled: true
+  level: "info"
+  file: "~/.config/lazysql/lazysql.log"
+
+# Syntax highlighting
+syntax:
+  enabled: true
+  keywords_uppercase: true
